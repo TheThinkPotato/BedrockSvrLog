@@ -3,6 +3,7 @@ using System;
 using BedrockSvrLog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BedrockSvrLog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250806074903_updateUserTablePfidForNullValue")]
+    partial class updateUserTablePfidForNullValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
@@ -49,30 +52,6 @@ namespace BedrockSvrLog.Migrations
                     b.ToTable("Login");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Data.RealmEvent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("EventTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Xuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Xuid");
-
-                    b.ToTable("RealmEvent");
-                });
-
             modelBuilder.Entity("BedrockSvrLog.Data.User", b =>
                 {
                     b.Property<string>("Xuid")
@@ -101,22 +80,9 @@ namespace BedrockSvrLog.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Data.RealmEvent", b =>
-                {
-                    b.HasOne("BedrockSvrLog.Data.User", "User")
-                        .WithMany("RealmEvents")
-                        .HasForeignKey("Xuid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BedrockSvrLog.Data.User", b =>
                 {
                     b.Navigation("Logins");
-
-                    b.Navigation("RealmEvents");
                 });
 #pragma warning restore 612, 618
         }
