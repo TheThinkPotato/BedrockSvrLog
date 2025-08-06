@@ -8,18 +8,16 @@ class Program
     public const string Version = "0.1c";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
+    public static string bedrockServerFolderLocation = @"..\";
+
     public const string LogFolder = "logs";
     public const string ServerLogFile = "server.log";
+    public const string DebugFile = "debug.txt";
 
-    public const string RealmLogsFile = "realmlogs.log";
     public const string RealmLogString = "Realms Story ::";
-
-    public const string PlayersListFile = "playerslist.csv";
     public const string PlayerSpawnString = "Player Spawned:";
     public const string PlayerConnectedString = "Player connected:";
     public const string PlayerDisconnectedString = "Player disconnected:";
-
-    public const string DebugFile = "debug.txt";
 
     protected static AppDbContext MyAppDbContext;
     public static DbHelpers dbHelpers;
@@ -31,12 +29,16 @@ class Program
         MyAppDbContext.Database.EnsureCreated();
         dbHelpers = new DbHelpers(MyAppDbContext);
 
+        // Calcualte the acutual folder on the drive
+        bedrockServerFolderLocation = Path.GetFullPath(bedrockServerFolderLocation);
+        
         underlinedText($"\t{Title} Version {Version}\n\tBy Daniel Lopez.", '=', 2);
 
         try
         {
             var psi = new ProcessStartInfo
             {
+                WorkingDirectory = bedrockServerFolderLocation,
                 FileName = "bedrock_server.exe",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -45,12 +47,16 @@ class Program
                 CreateNoWindow = false
             };
 
-            // Check if filename exists
-            if (!File.Exists(psi.FileName))
-            {
-                Console.WriteLine($"Error:\tThe file '{psi.FileName}' does not exist.\n\tPlease ensure that the executable is in bedrock server folder.");
-                return;
-            }
+
+            var exeFullPath = Path.Combine(bedrockServerFolderLocation, psi.FileName);
+
+                if (!File.Exists(exeFullPath))
+                {
+                    Console.WriteLine($"Error:\tThe file '{exeFullPath}' does not exist.\n\tPlease ensure that the folder is in bedrock server folder.\n Current folder: {bedrockServerFolderLocation} ");
+                    return;
+                }
+                psi.FileName = exeFullPath;
+
 
             CheckCreateLogFolder();
 
@@ -68,7 +74,6 @@ class Program
                     
                     if (line != null && line.Contains(RealmLogString))
                     {
-                        //await File.AppendAllTextAsync($"{LogFolder}\\{RealmLogsFile}", line + Environment.NewLine);
                         dbHelpers.addRealmEventToDb(getDateTimeFromLogLine(line), GetRealmStoryDataFromLogLine(line));
                     }
                     else if (line != null && line.Contains(PlayerConnectedString))
