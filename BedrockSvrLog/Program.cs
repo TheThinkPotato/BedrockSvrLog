@@ -1,12 +1,11 @@
-﻿using System;
+﻿using BedrockSvrLog.Data;
 using System.Diagnostics;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
+namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.1a";
+    public const string Version = "0.1b";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public const string LogFolder = "logs";
@@ -20,9 +19,18 @@ class Program
 
     public const string DebugFile = "debug.txt";
 
+    protected static AppDbContext MyAppDbContext;
+    public static DbHelpers dbHelpers;
+
     static async Task Main(string[] args)
     {
+        MyAppDbContext = new AppDbContext();
+
+        MyAppDbContext.Database.EnsureCreated();
+        dbHelpers = new DbHelpers(MyAppDbContext);
+
         underlinedText($"\t{Title} Version {Version}\n\tBy Daniel Lopez.", '=', 2);
+
         try
         {
             var psi = new ProcessStartInfo
@@ -55,11 +63,11 @@ class Program
                     var line = await process.StandardOutput.ReadLineAsync();
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
-                    if (line.Contains(RealmLogString))
+                    if (line != null && line.Contains(RealmLogString))
                     {
                         await File.AppendAllTextAsync($"{LogFolder}\\{RealmLogsFile}", line + Environment.NewLine);
                     }
-                    else if (line.Contains(PlayerSpawnString))
+                    else if (line != null && line.Contains(PlayerSpawnString))
                     {
                         createPlayerCsvFromLog(line);
                     }
@@ -96,7 +104,7 @@ class Program
         catch (Exception ex)
         {
             var currentTimeDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            writeToDebugFile(  $"{currentTimeDate} Exception: " + ex.ToString());
+            writeToDebugFile($"{currentTimeDate} Exception: " + ex.ToString());
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
         }
@@ -109,12 +117,12 @@ class Program
 
         logLine = (logLine.Split("]"))[1].Trim();
 
-        logLine = logLine.Substring(PlayerSpawnString.Length).Trim();        
+        logLine = logLine.Substring(PlayerSpawnString.Length).Trim();
         var parts = logLine.Split(new[] { "Player Spawned:", "xuid:", "pfid:" }, StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length == 3)
         {
-            writeToDebugFile($"Debug: Player Spawned Log: {logLine} - Parts: {string.Join(", ", parts)}");
+            writeToDebugFile($"Debug: Player Spawned Log: {logLine.Replace(",","")} - Parts: {string.Join(", ", parts)}");
 
             var playerName = parts[0].Trim();
             var xuid = parts[1].Trim().Replace(",", "");
@@ -135,11 +143,15 @@ class Program
                 }
             }
 
+            dbHelpers.addUserToDb(playerName, xuid, pfid);
+
             if (!playerExists)
             {
                 File.AppendAllText(csvPath, $"{playerName},{xuid},{pfid}{Environment.NewLine}");
             }
-        } else
+
+        }
+        else
         {
             writeToDebugFile($"Debug: Player Spawned Log: {logLine} - Parts: {string.Join(", ", parts)} - Invalid format");
         }
@@ -178,10 +190,9 @@ class Program
         Console.WriteLine(new string(character, text.Length));
         Console.WriteLine(text);
         Console.WriteLine(new string(character, text.Length));
-        if(newLines > 0)
+        if (newLines > 0)
         {
-            Console.WriteLine(new string('\n', newLines -1));
+            Console.WriteLine(new string('\n', newLines - 1));
         }
     }
-
 }
