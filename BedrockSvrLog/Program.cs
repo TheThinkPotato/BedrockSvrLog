@@ -1,11 +1,12 @@
 ﻿using BedrockSvrLog.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.1c";
+    public const string Version = "0.2a";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public static string bedrockServerFolderLocation = @"..\";
@@ -24,7 +25,10 @@ class Program
 
     static async Task Main(string[] args)
     {
-        MyAppDbContext = new AppDbContext();
+        
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        optionsBuilder.UseSqlite("Data Source=app.db");
+        MyAppDbContext = new AppDbContext(optionsBuilder.Options);
 
         MyAppDbContext.Database.EnsureCreated();
         dbHelpers = new DbHelpers(MyAppDbContext);

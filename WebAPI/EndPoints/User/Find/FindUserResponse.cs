@@ -1,5 +1,5 @@
 ﻿namespace WebAPI;
-public class UserResponse
+public class FindUserResponse
 {
     public string Name { get; init; } = string.Empty;
     public string Xuid { get; init; } = string.Empty;

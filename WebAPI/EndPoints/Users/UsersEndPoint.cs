@@ -1,0 +1,34 @@
+﻿using FastEndpoints;
+using BedrockSvrLog.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace WebAPI;
+
+public class UsersEndpoint : EndpointWithoutRequest<UsersResponse>
+{
+    private readonly AppDbContext _db;
+
+    public UsersEndpoint(AppDbContext db)
+    {
+        _db = db;
+    }
+
+    public override void Configure()
+    {
+        Get("/api/Users/");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var users = await _db.User
+            .Select(u => new UserDTO
+            {
+                Name = u.Name,
+                Xuid = u.Xuid,
+                Pfid = u.Pfid
+            }).ToListAsync(ct);
+
+        await Send.OkAsync( new UsersResponse {Users = users }, ct);
+    }
+}

@@ -1,19 +1,44 @@
 ﻿using FastEndpoints;
+using BedrockSvrLog.Data;
+using Microsoft.EntityFrameworkCore;
 
-public class MyEndpoint : Endpoint<MyRequest, MyResponse>
+namespace WebAPI;
+
+public class UserEndpoint : EndpointWithoutRequest<UserResponse>
 {
+    private readonly AppDbContext _db;
+
+    public UserEndpoint(AppDbContext db)
+    {
+        _db = db;
+    }
+
     public override void Configure()
     {
-        Post("/api/user/create");
+        Get("/api/User/{xuid}");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(MyRequest req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        await Send.OkAsync(new()
+        var xuid = Route<string>("xuid");
+
+        var user = await _db.User
+            .Where(u => u.Xuid == xuid)
+            .Select(u => new UserResponse
+            {
+                Name = u.Name,
+                Xuid = u.Xuid,
+                Pfid = u.Pfid
+            }).FirstOrDefaultAsync(ct);
+
+        if (user == null)
         {
-            FullName = req.FirstName + " " + req.LastName,
-            IsOver18 = req.Age > 18
-        });
+            await Send.NotFoundAsync(ct);
+        }
+        else
+        {
+            await Send.OkAsync(user, ct);
+        }
     }
 }
