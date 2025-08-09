@@ -197,7 +197,7 @@ class Program
         {
             endIndex = logLine.Length;
         }
-        return logLine.Substring(startIndex, endIndex - startIndex).Trim().Replace("disconnected:", "").Replace("Spawned:", "").Replace("connected:", "");
+        return logLine.Substring(startIndex, endIndex - startIndex).Trim().Replace("disconnected:", "").Replace("Spawned: ", "").Replace("connected: ", "");
     }
 
     public static string getXuidFromLogLine(string logLine)

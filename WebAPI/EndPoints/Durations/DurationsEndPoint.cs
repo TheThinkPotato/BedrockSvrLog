@@ -33,6 +33,7 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
                 Duration = TimeSpan.FromSeconds(g.Sum(x => x.l.Duration?.TotalSeconds ?? 0)),
                 GameplayDuration = TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)),
             })
+            .OrderByDescending(x => x.GameplayDuration)
             .ToList();
 
         await Send.OkAsync(new DurationsResponse { Durations = durations }, ct);
