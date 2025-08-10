@@ -364,3 +364,4 @@ FodyWeavers.xsd
 BedrockSvrLog/app.db-wal
 BedrockSvrLog/app.db-shm
 BedrockSvrLog/app.db
+WebApp/bedrock-svr-log/.env

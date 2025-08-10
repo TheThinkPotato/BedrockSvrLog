@@ -1,4 +1,7 @@
-export const API = "http://10.1.1.91:5000/API";
+export const API = import.meta.env.VITE_API;
+
+export const ApiUrl = `${API}/API`;
+
 export const headers = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",

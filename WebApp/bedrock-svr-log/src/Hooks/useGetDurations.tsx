@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { API, headers } from "../Api/Api";
+import { ApiUrl, headers } from "../Api/Api";
 
 export interface Duration {
   xuid: number;
@@ -23,13 +23,15 @@ export interface DurationResponse {
 }
 
 const fetchDurations = async () => {
-  const { data } = await axios.get<DurationResponse>(`${API}/durations`, {
+  const { data } = await axios.get<DurationResponse>(`${ApiUrl}/durations`, {
     headers: headers,
   });
   return data;
 };
 
 export const useGetDurations = () => {
+  console.log(ApiUrl);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["durations"],
     queryFn: fetchDurations,

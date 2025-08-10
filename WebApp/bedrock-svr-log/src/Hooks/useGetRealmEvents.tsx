@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { API, headers } from "../Api/Api";
+import { ApiUrl, headers } from "../Api/Api";
 
 export interface RealmEvent {
   xuid: number;
@@ -16,7 +16,7 @@ export interface RealmEventResponse {
 }
 
 const fetchRealmEvents = async () => {
-  const { data } = await axios.get<RealmEventResponse>(`${API}/realmevents`, {
+  const { data } = await axios.get<RealmEventResponse>(`${ApiUrl}/realmevents`, {
     headers: headers,
   });
   return data;
