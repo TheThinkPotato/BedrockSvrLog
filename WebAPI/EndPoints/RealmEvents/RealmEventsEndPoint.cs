@@ -31,7 +31,9 @@ public class RealmEventsEndpoint : EndpointWithoutRequest<RealmsEventResponse>
             RealmEvent = realEvent.r.EventType,
             EventTime = realEvent.r.EventTime,
             DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(realEvent.u.Name)
-        }).ToListAsync(ct);
+        })
+        .OrderByDescending(r => r.EventTime) 
+        .ToListAsync(ct);
 
 
         await Send.OkAsync(new RealmsEventResponse { Users = users }, ct);
