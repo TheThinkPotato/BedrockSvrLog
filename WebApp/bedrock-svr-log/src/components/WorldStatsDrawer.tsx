@@ -3,7 +3,7 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useGetRealmEvents } from "../Hooks/useGetRealmEvents";
-import { formatDateTimeFull } from "../Helpers/timeHelper";
+import { formatDateTime } from "../Helpers/timeHelper";
 import { splitCamelCase } from "../Helpers/textHelper";
 
 const WorldStatsDrawer = ({
@@ -73,7 +73,7 @@ const WorldStatsDrawer = ({
                 header="Time"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatDateTimeFull(item.eventTime)}</Typography>
+                  <Typography>{formatDateTime(item.eventTime)}</Typography>
                 )}
               />
             </DataTable>

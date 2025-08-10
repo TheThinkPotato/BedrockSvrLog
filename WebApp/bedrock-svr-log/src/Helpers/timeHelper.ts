@@ -1,28 +1,29 @@
-export const formatTime = (time: number) => {
+export const formatTimeCount = (time: number) => {
     const workingTime = time.toString().split(":");
     return workingTime[0] + "h " + workingTime[1] + "m " + workingTime[2].slice(0, 2) + "s";
 };
 
-export const formatDateTime = (dateTime: string, show24Hour = false) => {
-    let workingDate = dateTime.split("T")[0];
-    workingDate = workingDate.split("-").reverse().join("/");
-    const workingTime = dateTime.split("T")[1].split(":");
-    if (show24Hour) {
-        return workingDate + " " + workingTime[0] + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2);
-    } else {
-        return workingDate + " " + (parseInt(workingTime[0]) < 12 ? workingTime[0] :
-         parseInt(workingTime[0]) - 12) + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2) + " " + (parseInt(workingTime[0]) < 12 ? "AM" : "PM");
-    }
+export const formatTime = (input: string) => {
+    const [hourStr, minuteStr, secondStr] = input.split(':');
+    let hours = parseInt(hourStr, 10);
+    const minutes = minuteStr.padStart(2, '0');
+    const seconds = secondStr.split('.')[0].padStart(2, '0'); // ignore milliseconds
+
+    // Determine AM or PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12; // Convert 0 → 12
+
+    return `${hours}:${minutes}:${seconds} ${ampm}`;
 };
 
-export const formatDateTimeFull = (dateTime: string, show24Hour = false) => {
-    let workingDate = dateTime.split("T")[0];
-    workingDate = workingDate.split("-").reverse().join("/");
-    const workingTime = dateTime.split("T")[1].split(":");
-    if (show24Hour) {
-        return workingDate + " " + workingTime[0] + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2);
-    } else {
-        return workingDate + " " + (parseInt(workingTime[0]) < 12 ? workingTime[0] :
-         parseInt(workingTime[0]) - 12) + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2) + " " + (parseInt(workingTime[0]) < 12 ? "AM" : "PM");
-    }
+export const formatDateTime = (input: string) => {    
+    const date = new Date(input);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const year = date.getFullYear();
+
+    const time = formatTime(input.split("T")[1])
+    return `${day}/${month}/${year} ${time}`; 
 }
+

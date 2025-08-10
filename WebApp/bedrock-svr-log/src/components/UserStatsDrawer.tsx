@@ -3,7 +3,7 @@ import { CheckCircle, Close, Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useGetDurations } from "../Hooks/useGetDurations";
-import { formatDateTime, formatTime } from "../Helpers/timeHelper";
+import { formatTime, formatTimeCount } from "../Helpers/timeHelper";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -93,7 +93,7 @@ const UserStatsDrawer = ({
                 header="Playtime"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatTime(item.totalLiveDuration)}</Typography>
+                  <Typography>{formatTimeCount(item.totalLiveDuration)}</Typography>
                 )}
               />
               <Column
@@ -101,7 +101,7 @@ const UserStatsDrawer = ({
                 header="Last Seen"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatDateTime(item.lastLogin)}</Typography>
+                  <Typography>{formatTime(item.lastLogin)}</Typography>
                 )}
               />
             </DataTable>
