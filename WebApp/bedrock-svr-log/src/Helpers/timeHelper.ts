@@ -10,7 +10,8 @@ export const formatDateTime = (dateTime: string, show24Hour = false) => {
     if (show24Hour) {
         return workingDate + " " + workingTime[0] + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2);
     } else {
-        return workingDate + " " + workingTime[0] + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2) + " " + (parseInt(workingTime[0]) < 12 ? "AM" : "PM");
+        return workingDate + " " + (parseInt(workingTime[0]) < 12 ? workingTime[0] :
+         parseInt(workingTime[0]) - 12) + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2) + " " + (parseInt(workingTime[0]) < 12 ? "AM" : "PM");
     }
 };
 
@@ -21,6 +22,7 @@ export const formatDateTimeFull = (dateTime: string, show24Hour = false) => {
     if (show24Hour) {
         return workingDate + " " + workingTime[0] + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2);
     } else {
-        return workingDate + " " + workingTime[0] + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2) + " " + (parseInt(workingTime[0]) < 12 ? "AM" : "PM");
+        return workingDate + " " + (parseInt(workingTime[0]) < 12 ? workingTime[0] :
+         parseInt(workingTime[0]) - 12) + ":" + workingTime[1] + ":" + workingTime[2].slice(0, 2) + " " + (parseInt(workingTime[0]) < 12 ? "AM" : "PM");
     }
 }
