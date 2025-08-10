@@ -1,0 +1,13 @@
+{
+    "GameTags":
+    [
+        {
+            "GameTag":"gamerTag",
+            "DiceBearSeed":"diceBearSeed"
+        },
+        {   
+            "GameTag":"example",
+            "DiceBearSeed":"sa2ds988a0sd98"
+        }
+    ]
+}

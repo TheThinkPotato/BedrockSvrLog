@@ -11,4 +11,5 @@ public record RealmsEventDTO
     public string? Pfid { get; init; } = null;
     public string RealmEvent { get; init; } = string.Empty;
     public DateTime? EventTime { get; init; } = null;
+    public string DiceBearAvatarUrl { get; init; } = string.Empty;
 }

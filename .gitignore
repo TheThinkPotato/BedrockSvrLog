@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+BedrockSvrLog/app.db-wal
+BedrockSvrLog/app.db-shm
+BedrockSvrLog/app.db

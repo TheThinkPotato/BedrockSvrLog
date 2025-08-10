@@ -29,7 +29,8 @@ public class RealmEventsEndpoint : EndpointWithoutRequest<RealmsEventResponse>
             Xuid = realEvent.u.Xuid,
             Pfid = realEvent.u.Pfid,
             RealmEvent = realEvent.r.EventType,
-            EventTime = realEvent.r.EventTime
+            EventTime = realEvent.r.EventTime,
+            DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(realEvent.u.Name)
         }).ToListAsync(ct);
 
 

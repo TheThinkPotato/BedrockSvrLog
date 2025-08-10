@@ -30,10 +30,20 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
                 Name = g.Key.Name,
                 Xuid = g.Key.Xuid,
                 Pfid = g.Key.Pfid,
-                Duration = TimeSpan.FromSeconds(g.Sum(x => x.l.Duration?.TotalSeconds ?? 0)),
-                GameplayDuration = TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)),
+                DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(g.Key.Name),
+                TotalDuration = TimeSpan.FromSeconds(g.Sum(x => x.l.Duration?.TotalSeconds ?? 0)),
+                TotalGameplayDuration = TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)),
+                TotalLiveDuration = g.Any(x => x.l.LogoutTime == null) ? DateTime.Now.Subtract(g.Max(x => x.l.SpawnTime ?? DateTime.Now)) +
+                                            TimeSpan.FromSeconds(g.Sum(x => x.l.Duration?.TotalSeconds ?? 0)) :
+                                            TimeSpan.FromSeconds(g.Sum(x => x.l.Duration?.TotalSeconds ?? 0)),
+                TotalLiveGameplayDuration = g.Any(x => x.l.LogoutTime == null) ? DateTime.Now.Subtract(g.Max(x => x.l.SpawnTime ?? DateTime.Now)) +
+                                            TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)) :
+                                            TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)),
+                LastLogin = g.Max(x => x.l.LoginTime),
+                SpawnTime = g.Max(x => x.l.SpawnTime ?? DateTime.Now),
+                IsOnline = g.Any(x => x.l.LogoutTime == null)
             })
-            .OrderByDescending(x => x.GameplayDuration)
+            .OrderByDescending(x => x.TotalDuration)
             .ToList();
 
         await Send.OkAsync(new DurationsResponse { Durations = durations }, ct);

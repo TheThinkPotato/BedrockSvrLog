@@ -29,7 +29,8 @@ public class FindUserEndpoint : EndpointWithoutRequest<FindUserResponse>
             {
                 Name = u.Name.Trim() ?? "",
                 Xuid = u.Xuid ?? "",
-                Pfid = u.Pfid ?? ""
+                Pfid = u.Pfid ?? "",
+                DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(u.Name)
             }).FirstOrDefaultAsync(ct);
 
         if (user == null)
