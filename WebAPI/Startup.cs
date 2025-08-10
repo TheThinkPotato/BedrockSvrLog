@@ -24,7 +24,7 @@ class Startup
         IPAddress hostIp = IPAddress.Parse(ini["WebAPI"]["HostIP"]);
         int hostPort = int.Parse(ini["WebAPI"]["Port"]);
 
-        IPAddress appIp = IPAddress.Parse(ini["WebApp"]["AppIP"]);
+        string appIp = (ini["WebApp"]["AppIP"]);
         int appPort = int.Parse(ini["WebAPI"]["Port"]);
         var webAppAddress = $"http://{appIp}:{appPort}";
 
@@ -39,14 +39,17 @@ class Startup
             {
                 builder
                     .WithOrigins(webAppAddress)
-                    .WithOrigins("http://localhost:5173")
+                    .WithOrigins("http://localhost:5000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
             });
         });
 
-        Console.WriteLine($"CORS policy configured to allow React app at: http://{webAppAddress}");
+
+
+
+        Console.WriteLine($"CORS policy configured to allow React app at: {webAppAddress}");
 
         // Bind to all network interfaces on port 5000
         bld.WebHost.ConfigureKestrel(options =>
@@ -69,8 +72,13 @@ class Startup
         app.UseCors("AllowReactApp")
             .UseCors("AllowLocalHostDev");
 
+        app.UseDefaultFiles()
+           .UseStaticFiles();
+
         app.UseFastEndpoints()
            .UseSwaggerGen();
+
+        app.MapFallbackToFile("index.html");
 
         app.Run();
     }
