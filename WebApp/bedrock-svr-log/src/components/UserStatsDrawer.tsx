@@ -1,5 +1,5 @@
 import { Drawer, Box, Typography, IconButton, Avatar } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { CheckCircle, Close, Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useGetDurations } from "../Hooks/useGetDurations";
@@ -72,9 +72,19 @@ const UserStatsDrawer = ({
               <Column
                 field="isOnline"
                 header="Online"
-                className="text-white"
+                className="text-white text-center"
                 body={(item) => (
-                  <Typography>{item.isOnline ? "Yes" : "No"}</Typography>
+                    <Typography className="flex items-center">
+                      {item.isOnline ? (
+                        <CheckCircle
+                          style={{ fontSize: "1.5rem", color: "#22c55e" }}
+                        />                        
+                      ) : (
+                        <Close
+                          style={{ fontSize: "1.5rem", color: "#ef4444" }}
+                        />
+                      )}
+                    </Typography>
                 )}
               />
 

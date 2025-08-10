@@ -43,7 +43,7 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
                 SpawnTime = g.Max(x => x.l.SpawnTime ?? DateTime.Now),
                 IsOnline = g.Any(x => x.l.LogoutTime == null)
             })
-            .OrderByDescending(x => x.TotalDuration)
+            .OrderByDescending(x => x.TotalLiveDuration)
             .ToList();
 
         await Send.OkAsync(new DurationsResponse { Durations = durations }, ct);
