@@ -3,7 +3,7 @@ import { CheckCircle, Close, Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useGetDurations } from "../Hooks/useGetDurations";
-import { formatTime, formatTimeCount } from "../Helpers/timeHelper";
+import { formatDateTime, formatTimeCount } from "../Helpers/timeHelper";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -36,9 +36,9 @@ const UserStatsDrawer = ({
         },
       }}
     >
-      <Box className="p-6 h-full overflow-y-auto">
-        <Box className="flex justify-between items-center mb-6">
-          <Typography variant="h4" className="text-white font-bold">
+      <Box className="p-6 h-full overflow-y-auto" sx={{ marginTop: "0.5rem" }}>
+        <Box className="flex justify-between items-center" sx={{ marginLeft: "0.5rem" }}>           
+          <Typography variant="h4">
             User Statistics
           </Typography>
           <IconButton
@@ -51,7 +51,7 @@ const UserStatsDrawer = ({
 
         {/* User Stats Table */}
         <Box className="mb-8">
-          <Typography variant="h6" className="text-white mb-4">
+          <Typography variant="h6"  sx={{ marginLeft: "0.5rem", marginBottom: "0.5rem" }}>
             Player Overview
           </Typography>
           <Box className="bg-gray-800 rounded-lg p-4">
@@ -101,7 +101,7 @@ const UserStatsDrawer = ({
                 header="Last Seen"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatTime(item.lastLogin)}</Typography>
+                  <Typography>{formatDateTime(item.lastLogin)}</Typography>
                 )}
               />
             </DataTable>

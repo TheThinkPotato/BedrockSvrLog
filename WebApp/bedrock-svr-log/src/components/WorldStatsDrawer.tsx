@@ -29,9 +29,9 @@ const WorldStatsDrawer = ({
         },
       }}
     >
-      <Box className="p-6 h-full overflow-y-auto">
-        <Box className="flex justify-between items-center mb-6">
-          <Typography variant="h4" className="text-white font-bold">
+      <Box className="p-6 h-full overflow-y-auto" sx={{ marginTop: "0.5rem" }}>
+        <Box className="flex justify-between items-center" sx={{ marginLeft: "0.5rem" }}>
+          <Typography variant="h4">
             World Achievements
           </Typography>
           <IconButton
@@ -44,7 +44,7 @@ const WorldStatsDrawer = ({
 
         {/* World Events Table */}
         <Box>
-          <Typography variant="h6" className="text-white mb-4">
+          <Typography variant="h6" sx={{ marginLeft: "0.5rem", marginBottom: "0.5rem" }}>
             Recent Events
           </Typography>
           <Box className="bg-gray-800 rounded-lg p-4">
