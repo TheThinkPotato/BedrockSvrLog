@@ -39,7 +39,7 @@ class Startup
             {
                 builder
                     .WithOrigins(webAppAddress)
-                    .WithOrigins("http://localhost:5000")
+                    .WithOrigins("http://localhost:5173")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();

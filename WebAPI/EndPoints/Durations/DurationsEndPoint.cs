@@ -41,7 +41,7 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
                                             TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)),
                 LastLogin = g.Max(x => x.l.LoginTime),
                 SpawnTime = g.Max(x => x.l.SpawnTime ?? DateTime.Now),
-                IsOnline = g.Any(x => x.l.LogoutTime == null)
+                IsOnline = g.Any(x => x.l.LogoutTime == null && x.l.SpawnTime != null)
             })
             .OrderByDescending(x => x.TotalLiveDuration)
             .ToList();
