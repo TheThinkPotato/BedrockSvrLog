@@ -3,9 +3,14 @@ import { CheckCircle, Close, Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useGetDurations, type Duration } from "../Hooks/useGetDurations";
-import { formatDateTime, formatTimeCount, getTimeDifferenceTimeDateFull } from "../Helpers/timeHelper";
+import {
+  formatDateTime,
+  formatTimeCount,
+  getTimeDifferenceTimeDateFull,
+} from "../Helpers/timeHelper";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import UserModal from "./UserModal";
 
 const UserStatsDrawer = ({
   open,
@@ -18,14 +23,26 @@ const UserStatsDrawer = ({
   const { data: durations, isLoading } = useGetDurations(open);
 
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Duration | null>(null);
 
   const isAnyoneOnline = durations?.durations.some((item) => item.isOnline);
 
+  const handleUserClick = (user: Duration) => {
+    setSelectedUser(user);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setSelectedUser(null);
+  };
+
   useEffect(() => {
     if (isAnyoneOnline) {
-    const interval = setInterval(() => {
-      setCurrentDateTime(new Date()); // update to current time
-    }, 1000);
+      const interval = setInterval(() => {
+        setCurrentDateTime(new Date()); // update to current time
+      }, 1000);
 
       return () => clearInterval(interval); // cleanup on unmount
     }
@@ -36,7 +53,7 @@ const UserStatsDrawer = ({
       queryClient.invalidateQueries({ queryKey: ["durations"] });
     }
   }, [open, queryClient]);
-  
+
   return (
     <Drawer
       anchor="right"
@@ -51,10 +68,11 @@ const UserStatsDrawer = ({
       }}
     >
       <Box className="p-6 h-full overflow-y-auto" sx={{ marginTop: "0.5rem" }}>
-        <Box className="flex justify-between items-center" sx={{ marginLeft: "0.5rem" }}>           
-          <Typography variant="h4">
-            User Statistics
-          </Typography>
+        <Box
+          className="flex justify-between items-center"
+          sx={{ marginLeft: "0.5rem" }}
+        >
+          <Typography variant="h4">User Statistics</Typography>
           <IconButton
             onClick={onClose}
             className="text-gray-400 hover:text-white"
@@ -65,7 +83,10 @@ const UserStatsDrawer = ({
 
         {/* User Stats Table */}
         <Box className="mb-8">
-          <Typography variant="h6"  sx={{ marginLeft: "0.5rem", marginBottom: "0.5rem" }}>
+          <Typography
+            variant="h6"
+            sx={{ marginLeft: "0.5rem", marginBottom: "0.5rem" }}
+          >
             Player Overview
           </Typography>
           <Box className="bg-gray-800 rounded-lg p-4">
@@ -83,23 +104,44 @@ const UserStatsDrawer = ({
                 className="text-white"
                 body={(item) => <Avatar src={item.diceBearAvatarUrl} />}
               />
-              <Column field="name" header="Username" className="text-white" />
+              <Column
+                field="name"
+                header="Username"
+                className="text-white"
+                body={(item) => (
+                  <Box
+                    onClick={() => handleUserClick(item)}
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "left",
+                      justifyContent: "left",                      
+                    }}
+                    sx={{
+                      "&:hover": { color: "#7cf" },
+                    }}
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    {item.name}
+                  </Box>
+                )}
+              />
               <Column
                 field="isOnline"
                 header="Online"
                 className="text-white text-center"
                 body={(item: Duration) => (
-                    <Typography className="flex items-center">
-                      {item.isOnline ? (
-                        <CheckCircle
-                          style={{ fontSize: "1.5rem", color: "#22c55e" }}
-                        />                        
-                      ) : (
-                        <Close
-                          style={{ fontSize: "1.5rem", color: "#ef4444" }}
-                        />
-                      )}
-                    </Typography>
+                  <Typography className="flex items-center">
+                    {item.isOnline ? (
+                      <CheckCircle
+                        style={{ fontSize: "1.5rem", color: "#22c55e" }}
+                      />
+                    ) : (
+                      <Close style={{ fontSize: "1.5rem", color: "#ef4444" }} />
+                    )}
+                  </Typography>
                 )}
               />
 
@@ -108,7 +150,14 @@ const UserStatsDrawer = ({
                 header="Online Time"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{(`${item.isOnline ? getTimeDifferenceTimeDateFull(currentDateTime, item.spawnTime) : "-"}` )}</Typography>
+                  <Typography>{`${
+                    item.isOnline
+                      ? getTimeDifferenceTimeDateFull(
+                          currentDateTime,
+                          item.spawnTime
+                        )
+                      : "-"
+                  }`}</Typography>
                 )}
               />
               <Column
@@ -116,7 +165,9 @@ const UserStatsDrawer = ({
                 header="Total Playtime"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatTimeCount(item.totalLiveDuration)}</Typography>
+                  <Typography>
+                    {formatTimeCount(item.totalLiveDuration)}
+                  </Typography>
                 )}
               />
               <Column
@@ -131,6 +182,12 @@ const UserStatsDrawer = ({
           </Box>
         </Box>
       </Box>
+
+      <UserModal
+        selectedUser={selectedUser}
+        handleModalClose={handleModalClose}
+        modalOpen={modalOpen}
+      />
     </Drawer>
   );
 };

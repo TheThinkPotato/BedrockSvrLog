@@ -1,4 +1,4 @@
-export const formatTimeCount = (time: number) => {
+export const formatTimeCount = (time: string) => {
     const workingTime = time.toString().split(":");
     return workingTime[0] + "h " + workingTime[1] + "m " + workingTime[2].slice(0, 2) + "s";
 };

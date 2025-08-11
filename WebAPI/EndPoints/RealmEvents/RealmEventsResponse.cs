@@ -1,10 +1,10 @@
 ﻿namespace WebAPI;
 public class RealmsEventResponse
 {
-    public List<RealmsEventDTO> Users { get; set; } = [];
+    public List<RealmEventDetails> RealmEvents { get; set; } = [];
 }
 
-public record RealmsEventDTO
+public record RealmEventDetails
 {
     public string Name { get; init; } = string.Empty;
     public string Xuid { get; init; } = string.Empty;

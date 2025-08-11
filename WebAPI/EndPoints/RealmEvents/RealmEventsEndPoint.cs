@@ -21,9 +21,9 @@ public class RealmEventsEndpoint : EndpointWithoutRequest<RealmsEventResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var users = await _db.User
+        var realmEvetns = await _db.User
         .Join(_db.RealmEvent, u => u.Xuid, r => r.Xuid, (u, r) => new { u, r })
-        .Select(realEvent => new RealmsEventDTO
+        .Select(realEvent => new RealmEventDetails
         {
             Name = realEvent.u.Name,
             Xuid = realEvent.u.Xuid,
@@ -36,6 +36,6 @@ public class RealmEventsEndpoint : EndpointWithoutRequest<RealmsEventResponse>
         .ToListAsync(ct);
 
 
-        await Send.OkAsync(new RealmsEventResponse { Users = users }, ct);
+        await Send.OkAsync(new RealmsEventResponse { RealmEvents = realmEvetns }, ct);
     }
 }

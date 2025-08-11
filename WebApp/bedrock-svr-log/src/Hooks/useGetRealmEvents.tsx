@@ -11,12 +11,12 @@ export interface RealmEvent {
   diceBearAvatarUrl: string;
 }
 
-export interface RealmEventResponse {
-  users: RealmEvent[];
+export interface RealmEvents {
+  realmEvents: RealmEvent[];
 }
 
 const fetchRealmEvents = async () => {
-  const { data } = await axios.get<RealmEventResponse>(`${ApiUrl}/realmevents`, {
+  const { data } = await axios.get<RealmEvents>(`${ApiUrl}/realmevents`, {
     headers: headers,
   });
   return data;
@@ -31,7 +31,7 @@ export const useGetRealmEvents = (enabled = true) => {
   });
 
   return {
-    data: data,
+    data: data?.realmEvents ?? [],
     isLoading,
     error,
   };
