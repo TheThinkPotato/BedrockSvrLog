@@ -27,3 +27,13 @@ export const formatDateTime = (input: string) => {
     return `${day}/${month}/${year} ${time}`; 
 }
 
+export const getTimeDifferenceTimeDateFull = (currentDateTime: Date, time: string) => {
+    // const now = new Date();
+    const spawnDate = new Date(time);
+    const timeDiff = currentDateTime.getTime() - spawnDate.getTime();
+    //convert to hours, minutes, seconds
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }

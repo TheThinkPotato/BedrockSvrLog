@@ -14,7 +14,7 @@ const WorldStatsDrawer = ({
   onClose: () => void;
 }) => {
   const { data: realmEvents, isLoading: realmEventsLoading } =
-    useGetRealmEvents();  
+    useGetRealmEvents(open);  
 
   return (
     <Drawer

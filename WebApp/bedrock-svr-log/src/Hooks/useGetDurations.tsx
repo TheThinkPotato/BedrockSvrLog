@@ -29,13 +29,13 @@ const fetchDurations = async () => {
   return data;
 };
 
-export const useGetDurations = () => {
-  console.log(ApiUrl);
+export const useGetDurations = (enabled = true) => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["durations"],
     queryFn: fetchDurations,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: enabled,
   });
 
   return {

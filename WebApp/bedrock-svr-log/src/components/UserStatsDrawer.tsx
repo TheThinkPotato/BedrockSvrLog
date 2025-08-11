@@ -2,9 +2,9 @@ import { Drawer, Box, Typography, IconButton, Avatar } from "@mui/material";
 import { CheckCircle, Close, Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useGetDurations } from "../Hooks/useGetDurations";
-import { formatDateTime, formatTimeCount } from "../Helpers/timeHelper";
-import { useEffect } from "react";
+import { useGetDurations, type Duration } from "../Hooks/useGetDurations";
+import { formatDateTime, formatTimeCount, getTimeDifferenceTimeDateFull } from "../Helpers/timeHelper";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const UserStatsDrawer = ({
@@ -15,14 +15,28 @@ const UserStatsDrawer = ({
   onClose: () => void;
 }) => {
   const queryClient = useQueryClient();
-  const { data: durations, isLoading } = useGetDurations();
+  const { data: durations, isLoading } = useGetDurations(open);
+
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  const isAnyoneOnline = durations?.durations.some((item) => item.isOnline);
+
+  useEffect(() => {
+    if (isAnyoneOnline) {
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date()); // update to current time
+    }, 1000);
+
+      return () => clearInterval(interval); // cleanup on unmount
+    }
+  }, [isAnyoneOnline]);
 
   useEffect(() => {
     if (open) {
       queryClient.invalidateQueries({ queryKey: ["durations"] });
     }
   }, [open, queryClient]);
-
+  
   return (
     <Drawer
       anchor="right"
@@ -56,6 +70,7 @@ const UserStatsDrawer = ({
           </Typography>
           <Box className="bg-gray-800 rounded-lg p-4">
             <DataTable
+              key={isAnyoneOnline ? currentDateTime.getTime() : null}
               value={durations?.durations ?? []}
               className="text-white"
               stripedRows
@@ -73,7 +88,7 @@ const UserStatsDrawer = ({
                 field="isOnline"
                 header="Online"
                 className="text-white text-center"
-                body={(item) => (
+                body={(item: Duration) => (
                     <Typography className="flex items-center">
                       {item.isOnline ? (
                         <CheckCircle
@@ -89,8 +104,16 @@ const UserStatsDrawer = ({
               />
 
               <Column
+                field="lastSpawnTime"
+                header="Online Time"
+                className="text-white"
+                body={(item) => (
+                  <Typography>{(`${item.isOnline ? getTimeDifferenceTimeDateFull(currentDateTime, item.spawnTime) : "-"}` )}</Typography>
+                )}
+              />
+              <Column
                 field="totalLiveDuration"
-                header="Playtime"
+                header="Total Playtime"
                 className="text-white"
                 body={(item) => (
                   <Typography>{formatTimeCount(item.totalLiveDuration)}</Typography>

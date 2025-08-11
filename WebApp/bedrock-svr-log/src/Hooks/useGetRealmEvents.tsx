@@ -22,11 +22,12 @@ const fetchRealmEvents = async () => {
   return data;
 };
 
-export const useGetRealmEvents = () => {
+export const useGetRealmEvents = (enabled = true) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["realmEvents"],
     queryFn: fetchRealmEvents,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: enabled,
   });
 
   return {
