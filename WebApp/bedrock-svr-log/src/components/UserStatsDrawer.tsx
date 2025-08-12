@@ -184,7 +184,7 @@ const UserStatsDrawer = ({
       </Box>
 
       <UserModal
-        selectedUser={selectedUser}
+        selectedUser={selectedUser || null}
         handleModalClose={handleModalClose}
         modalOpen={modalOpen}
       />

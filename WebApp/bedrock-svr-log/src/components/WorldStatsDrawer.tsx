@@ -2,6 +2,8 @@ import { Drawer, Box, Typography, IconButton } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useGetRealmEvents } from "../Hooks/useGetRealmEvents";
 import RealmTable from "./RealmTable";
+import { useState } from "react";
+import type { Duration } from "../Hooks/useGetDurations";
 
 const WorldStatsDrawer = ({
   open,
@@ -12,6 +14,14 @@ const WorldStatsDrawer = ({
 }) => {
   const { data: realmEvents, isLoading: realmEventsLoading } =
     useGetRealmEvents(open);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Duration | null>(null);
+
+  const handleUserClick = (user: Duration) => {
+    setSelectedUser(user);
+    setModalOpen(true);
+  };
 
   return (
     <Drawer
@@ -40,7 +50,17 @@ const WorldStatsDrawer = ({
           </IconButton>
         </Box>
 
-        <RealmTable data={realmEvents ?? []} isLoading={realmEventsLoading} />
+        <RealmTable
+          data={realmEvents ?? []}
+          isLoading={realmEventsLoading}
+          RealmModal={{
+            open: modalOpen,
+            onClose: () => setModalOpen(false),
+            setSelectedUser: handleUserClick,
+            setModalOpen: (open: boolean) => setModalOpen(open),
+            selectedUser: selectedUser,
+          }}
+        />
       </Box>
     </Drawer>
   );

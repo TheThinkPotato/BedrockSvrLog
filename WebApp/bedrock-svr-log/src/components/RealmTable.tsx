@@ -5,59 +5,130 @@ import { formatDateTime } from "../Helpers/timeHelper";
 import { splitCamelCase } from "../Helpers/textHelper";
 import type { UserRealmEvent } from "../Hooks/useGetUserRealmEvetns";
 import type { RealmEvent } from "../Hooks/useGetRealmEvents";
+import UserModal from "./UserModal";
+import { useGetDurations, type Duration } from "../Hooks/useGetDurations";
 
 interface RealmTableProps {
-    data: RealmEvent[] | UserRealmEvent[];
-    isLoading: boolean;
-    showAvatar?: boolean;
-    showUsername?: boolean;
-    showHeader?: boolean;
+  data: RealmEvent[] | UserRealmEvent[];
+  isLoading: boolean;
+  showAvatar?: boolean;
+  showUsername?: boolean;
+  showHeader?: boolean;
+  RealmModal?: RealmModalProps;
 }
 
-const RealmTable = ({ data, isLoading, showAvatar = true, showUsername = true, showHeader = true }: RealmTableProps) => {
-    return(
-        <Box>
-            {showHeader && (
-                <Typography variant="h6" sx={{ marginLeft: "0.5rem", marginBottom: "0.5rem" }}>
-                    Recent Events
-                </Typography>
-            )}
-          <Box className="bg-gray-800 rounded-lg p-4">
-            <DataTable
-              value={data ?? []}
-              className="text-white"
-              stripedRows
-              size="small"
-              loading={isLoading}
-            >
-                {showAvatar && (
+interface RealmModalProps {
+  open: boolean;
+  onClose: () => void;
+  setSelectedUser: (user: Duration) => void;
+  setModalOpen: (open: boolean) => void;
+  selectedUser: Duration | null;
+}
+
+const RealmTable = ({
+  data,
+  isLoading,
+  showAvatar = true,
+  showUsername = true,
+  showHeader = true,
+  RealmModal,
+}: RealmTableProps) => {
+  const hasModal = !!RealmModal?.open && !!RealmModal?.selectedUser;
+
+  const { data: userDurations, isLoading: userDurationsLoading } = useGetDurations(hasModal);
+
+  const getUserDurationData = (user: number): Duration | null => {
+    const userDuration = userDurations?.durations.find((duration) => duration.xuid === user);
+    if (userDuration) {
+      return userDuration;
+    }
+    return null;
+  };
+
+
+  return (
+    <>
+      <Box>
+        {showHeader && (
+          <Typography
+            variant="h6"
+            sx={{ marginLeft: "0.5rem", marginBottom: "0.5rem" }}
+          >
+            Recent Achievements
+          </Typography>
+        )}
+        <Box className="bg-gray-800 rounded-lg p-4">
+          <DataTable
+            value={data ?? []}
+            className="text-white"
+            stripedRows
+            size="small"
+            loading={isLoading}
+          >
+            {showAvatar && (
               <Column
                 field="diceBearAvatarUrl"
                 header=""
                 className="text-white"
                 body={(item) => <Avatar src={item.diceBearAvatarUrl} />}
-              />)}
-              {showUsername && (
-                <Column field="name" header="Username" className="text-white" />
-              )}
-              <Column
-                field="realmEvent"
-                header="Event"
-                className="text-white"
-                body={(item) => <Typography>{splitCamelCase(item.realmEvent)}</Typography>}
               />
+            )}
+            {showUsername && (
               <Column
-                field="eventTime"
-                header="Time"
+                field="name"
+                header="Username"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatDateTime(item.eventTime)}</Typography>
+                  <Box
+                    onClick={() =>
+                      RealmModal?.setSelectedUser(item as Duration)
+                    }
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "left",
+                      justifyContent: "left",
+                    }}
+                    sx={{
+                      "&:hover": { color: "#7cf" },
+                    }}
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    {item.name}
+                  </Box>
                 )}
               />
-            </DataTable>
-          </Box>
+            )}
+            <Column
+              field="realmEvent"
+              header="Event"
+              className="text-white"
+              body={(item) => (
+                <Typography>{splitCamelCase(item.realmEvent)}</Typography>
+              )}
+            />
+            <Column
+              field="eventTime"
+              header="Time"
+              className="text-white"
+              body={(item) => (
+                <Typography>{formatDateTime(item.eventTime)}</Typography>
+              )}
+            />
+          </DataTable>
         </Box>
-    )
+      </Box>
+      {hasModal && !userDurationsLoading && (
+      <UserModal
+        selectedUser={getUserDurationData(RealmModal?.selectedUser?.xuid ?? 0) ?? null}
+          handleModalClose={RealmModal?.onClose}
+          modalOpen={RealmModal?.open}
+        />
+      )}
+    </>
+  );
 };
 
 export default RealmTable;

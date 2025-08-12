@@ -25,7 +25,6 @@ const UserModal = ({
 }: UserModalProps) => {
   const { data: userRealmEvents, isLoading: userRealmEventsLoading } =
     useGetUserRealmEvents(selectedUser?.xuid ?? 0, modalOpen);
-  console.log(userRealmEvents, userRealmEventsLoading);
 
   return (
     <Modal
@@ -36,13 +35,13 @@ const UserModal = ({
     >
       <Fade in={modalOpen}>
         <Box
-          className="flex flex-col w-1/2 mx-4 border border-gray-600"
+          className="flex flex-col w-1/2 border border-gray-600 min-w-[700px]"
           sx={{
             backgroundColor: "#1f2937",
             color: "white",
             paddingInline: "1rem",
             paddingTop: "0.5rem",
-            paddingBottom: "1rem",
+            paddingBottom: "2rem",
             maxWidth: "600px",
           }}
         >
@@ -91,9 +90,7 @@ const UserModal = ({
                     className="text-gray-300 flex flex-row items-center justify-center"
                     style={{ gap: "0.5rem" }}
                   >
-                    <Typography variant="body2" className="text-gray-300">
-                      Online:{" "}
-                    </Typography>
+                    <span className="text-gray-300">Online: </span>
                     {selectedUser.isOnline ? (
                       <CheckCircle
                         style={{ color: "#22c55e", fontSize: "1.2rem" }}
@@ -106,7 +103,7 @@ const UserModal = ({
               </Box>
               <Box
                 className="flex flex-col items-start"
-                sx={{ marginLeft: "1rem", flex: 4 }}
+                sx={{ marginLeft: "2rem", flex: 4 }}
               >
                 <Typography variant="h5" className="text-white mb-2">
                   {selectedUser.name}
@@ -119,13 +116,13 @@ const UserModal = ({
                   Last Online: {formatDateTime(selectedUser.spawnTime)}
                 </Typography>
                 {userRealmEvents && userRealmEvents.hasRealmEvents && (
-                  <Box sx={{ width: "90%", }}>
+                  <Box sx={{ width: "90%" }}>
                     <Typography
                       variant="h6"
                       className="text-white text-left"
                       sx={{ marginTop: "1.5rem" }}
                     >
-                      Recent Events
+                      Recent Achievements
                     </Typography>
                     <RealmTable
                       data={userRealmEvents.realmEvents}
