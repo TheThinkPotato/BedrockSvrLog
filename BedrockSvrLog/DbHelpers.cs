@@ -1,6 +1,5 @@
 ﻿using BedrockSvrLog.Data;
 
-
 namespace BedrockSvrLog;
 
 public class DbHelpers
@@ -13,7 +12,7 @@ public class DbHelpers
     }
     public void addUserToDb(string name, string xuid, string? pfid)
     {
-        Program.writeToDebugFile($"Debug: Adding new user to database: Name: {name}, XUID: {xuid}, PFID: {pfid}");
+        FileHelpers.writeToDebugFile($"Debug: Adding new user to database: Name: {name}, XUID: {xuid}, PFID: {pfid}");
         try
         {
 
@@ -33,7 +32,7 @@ public class DbHelpers
         }
         catch (Exception ex)
         {
-            Program.writeToDebugFile($"Error adding user to DB: {ex}");
+            FileHelpers.writeToDebugFile($"Error adding user to DB: {ex}");
         }
     }
 
@@ -50,13 +49,13 @@ public class DbHelpers
         }
         catch (Exception ex)
         {
-            Program.writeToDebugFile($"Error updating user PFID in DB: {ex}");
+            FileHelpers.writeToDebugFile($"Error updating user PFID in DB: {ex}");
         }
     }
 
     public void addUserLoginToDb(string xuid, DateTime loginTime)
     {
-        Program.writeToDebugFile($"Debug: Adding user login to database: XUID: {xuid}, Login Time: {loginTime}");
+        FileHelpers.writeToDebugFile($"Debug: Adding user login to database: XUID: {xuid}, Login Time: {loginTime}");
         try
         {
             var user = MyAppDbContext.User.Find(xuid);
@@ -73,13 +72,13 @@ public class DbHelpers
         }
         catch (Exception ex)
         {
-            Program.writeToDebugFile($"Error adding user login to DB: {ex}");
+            FileHelpers.writeToDebugFile($"Error adding user login to DB: {ex}");
         }
     }
 
     public void updateUserLoginSpawnTime(string xuid, DateTime spawnTime)
     {
-        Program.writeToDebugFile($"Debug: Updating user login spawn time in database: XUID: {xuid}, Spawn Time: {spawnTime}");
+        FileHelpers.writeToDebugFile($"Debug: Updating user login spawn time in database: XUID: {xuid}, Spawn Time: {spawnTime}");
         try
         {
             var login = MyAppDbContext.Login.FirstOrDefault(l => l.Xuid == xuid && l.SpawnTime == null);
@@ -91,13 +90,13 @@ public class DbHelpers
         }
         catch (Exception ex)
         {
-            Program.writeToDebugFile($"Error updating user login spawn time in DB: {ex}");
+            FileHelpers.writeToDebugFile($"Error updating user login spawn time in DB: {ex}");
         }
     }
 
     public void updateUserLoginLogoutTime(string xuid, DateTime logoutTime)
     {
-        Program.writeToDebugFile($"Debug: Updating user login logout time in database: XUID: {xuid}, Logout Time: {logoutTime}");
+        FileHelpers.writeToDebugFile($"Debug: Updating user login logout time in database: XUID: {xuid}, Logout Time: {logoutTime}");
         try
         {
             var login = MyAppDbContext.Login.FirstOrDefault(l => l.Xuid == xuid && l.LogoutTime == null);
@@ -118,7 +117,7 @@ public class DbHelpers
         }
         catch (Exception ex)
         {
-            Program.writeToDebugFile($"Error updating user login logout time in DB: {ex}");
+            FileHelpers.writeToDebugFile($"Error updating user login logout time in DB: {ex}");
         }
     }
 
@@ -141,7 +140,7 @@ public class DbHelpers
         }
         catch (Exception ex)
         {
-            Program.writeToDebugFile($"Error adding realm event to DB: {ex}");
+            FileHelpers.writeToDebugFile($"Error adding realm event to DB: {ex}");
         }
     }
 }
