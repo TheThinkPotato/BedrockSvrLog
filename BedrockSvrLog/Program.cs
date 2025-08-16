@@ -6,7 +6,7 @@ namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.2b";
+    public const string Version = "0.2c";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public static string bedrockServerFolderLocation = @"..\";

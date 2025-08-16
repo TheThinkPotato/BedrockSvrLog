@@ -81,7 +81,8 @@ public class DbHelpers
         FileHelpers.writeToDebugFile($"Debug: Updating user login spawn time in database: XUID: {xuid}, Spawn Time: {spawnTime}");
         try
         {
-            var login = MyAppDbContext.Login.FirstOrDefault(l => l.Xuid == xuid && l.SpawnTime == null);
+            var login = MyAppDbContext.Login.OrderByDescending(l => l.LoginTime)
+                .FirstOrDefault(l => l.Xuid == xuid && l.SpawnTime == null);
             if (login != null)
             {
                 login.SpawnTime = spawnTime;
@@ -99,7 +100,8 @@ public class DbHelpers
         FileHelpers.writeToDebugFile($"Debug: Updating user login logout time in database: XUID: {xuid}, Logout Time: {logoutTime}");
         try
         {
-            var login = MyAppDbContext.Login.FirstOrDefault(l => l.Xuid == xuid && l.LogoutTime == null);
+            var login = MyAppDbContext.Login.OrderByDescending(l => l.LoginTime)
+                .FirstOrDefault(l => l.Xuid == xuid && l.LogoutTime == null);
             if (login != null)
             {
                 login.LogoutTime = logoutTime;
