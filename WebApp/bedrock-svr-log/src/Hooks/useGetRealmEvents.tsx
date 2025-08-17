@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ApiUrl, headers } from "../Api/Api";
 
-export interface RealmEvent {
+export type RealmEvent = {
   xuid: number;
   name: string;
   pfid: string;
@@ -11,7 +11,7 @@ export interface RealmEvent {
   diceBearAvatarUrl: string;
 }
 
-export interface RealmEvents {
+export type RealmEvents = {
   realmEvents: RealmEvent[];
 }
 

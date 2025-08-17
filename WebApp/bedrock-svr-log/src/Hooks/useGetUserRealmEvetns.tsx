@@ -3,7 +3,7 @@ import axios from "axios";
 import { ApiUrl, headers } from "../Api/Api";
 import type { RealmEvent } from "./useGetRealmEvents";
 
-export interface UserRealmEvent {
+export type UserRealmEvent = {
     realmEvents: RealmEvent[];
     hasRealmEvents: boolean;
 }

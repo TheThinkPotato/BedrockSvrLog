@@ -171,11 +171,16 @@ const UserStatsDrawer = ({
                 )}
               />
               <Column
-                field="lastLogin"
+                field="lastLogOut"
                 header="Last Seen"
                 className="text-white"
                 body={(item) => (
-                  <Typography>{formatDateTime(item.lastLogin)}</Typography>
+                  <Typography>
+                    {item.lastLogOut && item.lastLogOut !== "" 
+                      ? formatDateTime(item.lastLogOut) 
+                      : formatDateTime(item.lastLogin)
+                    }
+                  </Typography>
                 )}
               />
             </DataTable>

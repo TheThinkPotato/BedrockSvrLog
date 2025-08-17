@@ -40,6 +40,7 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
                                             TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)) :
                                             TimeSpan.FromSeconds(g.Sum(x => x.l.GameplayeDuration?.TotalSeconds ?? 0)),
                 LastLogin = g.Max(x => x.l.LoginTime),
+                LastLogOut = g.Max(x => x.l.LogoutTime),
                 SpawnTime = g.Max(x => x.l.SpawnTime ?? DateTime.Now),
                 IsOnline = g.Any(x => x.l.LogoutTime == null && x.l.SpawnTime != null)
             })

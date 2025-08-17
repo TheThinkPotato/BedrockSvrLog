@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ApiUrl, headers } from "../Api/Api";
 
-export interface Duration {
+export type Duration = {
   xuid: number;
   name: string;
   pfid: string;
@@ -16,9 +16,10 @@ export interface Duration {
   totalGameplayDuration: string;
   totalLiveDuration: string;
   totalLiveGameplayDuration: string;
+  lastLogOut: string;
 }
 
-export interface DurationResponse {
+export type DurationResponse = {
   durations: Duration[];
 }
 

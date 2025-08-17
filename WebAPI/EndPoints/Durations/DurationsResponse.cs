@@ -18,5 +18,6 @@ public record DurationDTO
     public DateTime SpawnTime { get; init; } = DateTime.MinValue;
     public TimeSpan TimeSinceLastLogin => DateTime.Now - LastLogin;
     public TimeSpan TimeSinceLastSpawn =>  SpawnTime == DateTime.MinValue ? TimeSpan.Zero : DateTime.Now - SpawnTime;
+    public DateTime? LastLogOut { get; init; }
     public bool IsOnline { get; init; }
 }
