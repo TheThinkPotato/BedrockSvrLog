@@ -1,5 +1,15 @@
 export const formatTimeCount = (time: string) => {
+    console.log(time);
+
     const workingTime = time.toString().split(":");
+    if ( workingTime[0].includes(".")) {
+        const days = workingTime[0].split(".")[0];
+        const hours = workingTime[0].split(".")[1];
+        const minutes = workingTime[1];
+        const seconds = workingTime[2].slice(0, 2)
+        return  days + "d " + hours + "h " + minutes + "m " + seconds + "s";    
+    }
+
     return workingTime[0] + "h " + workingTime[1] + "m " + workingTime[2].slice(0, 2) + "s";
 };
 
