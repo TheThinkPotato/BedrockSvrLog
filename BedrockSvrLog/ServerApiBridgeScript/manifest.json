@@ -1,0 +1,25 @@
+﻿{
+  "format_version": 2,
+  "header": {
+    "name": "BedrockSvrLog",
+    "description": "Bedrock Sever Log, World Scrapper",
+    "uuid": "d600b60d-360c-48c9-ade5-dc0259bf2f44",
+    "version": [ 1, 0, 0 ],
+    "min_engine_version": [ 1, 21, 0 ]
+  },
+  "modules": [
+    {
+      "type": "script",
+      "language": "javascript",
+      "entry": "scripts/main.js",
+      "uuid": "03b42967-7bc6-4f0e-a847-7d808e0a8d1e",
+      "version": [ 1, 0, 0 ]
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.0.0"
+    }
+  ]
+}

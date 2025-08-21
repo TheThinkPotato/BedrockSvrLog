@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ServerApiBridgeScript\main.js" />
+    <None Remove="ServerApiBridgeScript\manifest.json" />
+    <None Remove="ServerApiBridgeScript\world_behavior_packs.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ServerApiBridgeScript\main.js" />
+    <EmbeddedResource Include="ServerApiBridgeScript\manifest.json" />
+    <EmbeddedResource Include="ServerApiBridgeScript\world_behavior_packs.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

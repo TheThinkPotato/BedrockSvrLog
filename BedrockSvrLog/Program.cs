@@ -6,7 +6,7 @@ namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.2c";
+    public const string Version = "0.2d";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public static string bedrockServerFolderLocation = @"..\";
@@ -23,6 +23,7 @@ class Program
     protected static AppDbContext MyAppDbContext;
     public static DbHelpers dbHelpers;
 
+    private const string SplashText = $"\t{Title} Version {Version}\n\tBy Daniel Lopez.";
     static async Task Main(string[] args)
     {
         
@@ -36,7 +37,11 @@ class Program
         // Calcualte the acutual folder on the drive
         bedrockServerFolderLocation = Path.GetFullPath(bedrockServerFolderLocation);
         
-        underlinedText($"\t{Title} Version {Version}\n\tBy Daniel Lopez.", '=', 2);
+        underlinedText( SplashText, '=', 1);
+
+        ServerApiBridgeScript.checkSetupServerApiBridgeScript();
+        
+        underline(SplashText.Length, '=',1,2);
 
         try
         {
@@ -147,8 +152,18 @@ class Program
         }
     }
 
-    
-
+    public static void underline(int numberCharWidth, char character, int previousLines = 0, int postLines = 0)
+    {
+        for (int i = 0; i < previousLines; i++)
+        {
+            Console.WriteLine();
+        }
+        Console.WriteLine(new string(character, numberCharWidth));
+        for (int i = 0; i < postLines; i++)
+        {
+            Console.WriteLine();
+        }
+    }
 }
 
 public record RealmStoryData
