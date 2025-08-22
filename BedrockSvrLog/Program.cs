@@ -43,6 +43,10 @@ class Program
         
         underline(SplashText.Length, '=',1,2);
 
+        var udpBridge = new UdpBridge();
+        var udpBridgeThread = new Thread(() => udpBridge.startUdpListner());
+        udpBridgeThread.Start();
+
         try
         {
             var psi = new ProcessStartInfo
@@ -79,6 +83,24 @@ class Program
                 {
                     var line = await process.StandardOutput.ReadLineAsync();
                     Console.WriteLine(line);
+                    // Pseudocode:
+                    // - The code currently prints the last message in udpBridge.MessageBuffer if the buffer is not empty.
+                    // - However, this does not clear the buffer, so the same message may be printed repeatedly.
+                    // - To avoid this, consume and print all new messages, then clear the buffer after printing.
+                    // - Replace the code block with one that prints and clears all messages in the buffer.
+
+                    //if (udpBridge.MessageBuffer.Count > 0)
+                    //{
+                    //    foreach (var msg in udpBridge.MessageBuffer)
+                    //    {
+                    //        Console.WriteLine(msg);
+                    //    }
+                    //    udpBridge.MessageBuffer.Clear();
+                    //}
+                    var messageBuffur = udpBridge.GetMessages();
+                    messageBuffur.ForEach(msg => Console.WriteLine(msg));
+
+
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
                     if (line != null && LogHelpers.containtPlayerIgnored(line));
@@ -128,7 +150,23 @@ class Program
                 }
             });
 
-            await Task.WhenAny(outputTask, errorTask, inputTask);
+            var udpReadTask = Task.Run(async () =>
+            {
+                while (!process.HasExited)
+                {
+                    var messages = udpBridge.GetMessages();
+                    if (messages.Count > 0)
+                    {
+                        foreach (var msg in messages)
+                        {
+                            Console.WriteLine(msg);
+                        }
+                    }
+                    //await Task.Delay(100); // Adjust delay as needed
+                }
+            });
+
+            await Task.WhenAny(outputTask, errorTask, inputTask, udpReadTask);
 
             process.WaitForExit();
         }
