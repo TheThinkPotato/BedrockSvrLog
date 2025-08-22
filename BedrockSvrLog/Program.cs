@@ -45,6 +45,9 @@ class Program
 
         try
         {
+
+            LogHelpers.InitiliazeAndLoadPlayerIgnoreList();
+
             var psi = new ProcessStartInfo
             {
                 WorkingDirectory = bedrockServerFolderLocation,
@@ -81,8 +84,8 @@ class Program
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
-                    if (line != null && LogHelpers.containtPlayerIgnored(line));
-                    else if (line != null && line.Contains(RealmLogString))
+                    if (line != null && LogHelpers.ContainsPlayerIgnored(line)) ;
+                    if (line != null && line.Contains(RealmLogString))
                     {
                         dbHelpers.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
                     }

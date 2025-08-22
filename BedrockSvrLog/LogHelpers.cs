@@ -2,6 +2,8 @@
 
 public static class LogHelpers
 {
+    public static List<string> playerIgnoreList = new List<string>();
+
     public static string getPfidFromLogLine(string logLine)
     {
         // Data looks like this. NO LOG FILE! - [2025-08-06 16:27:10:488 INFO] Player disconnected: RandomPlayer, xuid: 1234567890123456, pfid: a12ab345678c9d01
@@ -85,32 +87,32 @@ public static class LogHelpers
         }
     }
 
-    public static bool containtPlayerIgnored(string logLine)
+    public static void InitiliazeAndLoadPlayerIgnoreList()
     {
         string ignoreFilePath = "ignorePlayers.txt";
-
         if (!File.Exists(ignoreFilePath))
         {
-            //create the file if it does not exist
+            // Create the file if it does not exist
             File.WriteAllText(ignoreFilePath, "");
-            return false;
         }
+        playerIgnoreList = File.ReadAllLines(ignoreFilePath).Select(p => p.Trim()).ToList();
+        FileHelpers.writeToDebugFile($"Debug: Loaded {playerIgnoreList.Count} players from ignore list.");
+    }
 
-        string playerName = getPlayerNameFromLogLine(logLine);
 
+    public static bool ContainsPlayerIgnored(string playerName)
+    {
         if (string.IsNullOrEmpty(playerName))
         {
             return false; // Cannot ignore if player name is not found
         }
 
-        var ignorePlayers = File.ReadAllLines(ignoreFilePath).Select(p => p.Trim()).ToList();
 
-        if (ignorePlayers.Contains(playerName))
+        if (playerIgnoreList.Contains(playerName))
         {
             FileHelpers.writeToDebugFile($"Debug: Ignoring player {playerName} as they are in the ignore list.");
             return true; // Player is in the ignore list
         }
-
         return false; // Player is not in the ignore list
     }
 
