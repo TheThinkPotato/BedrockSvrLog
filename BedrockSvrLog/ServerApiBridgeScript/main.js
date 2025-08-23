@@ -1,4 +1,42 @@
-﻿import { world } from "@minecraft/server";
+﻿import { world, system } from "@minecraft/server";
+
+// Run every 30 seconds (600 ticks, since 20 ticks = 1 second)
+const INTERVAL = 30 * 20;
+
+system.runInterval(() => {
+  try {
+    // Get all players in the world
+    const players = world.getPlayers();
+
+    if (players.length === 0) {
+      return;
+    }
+
+    for (const player of players) {
+      try {
+        // Get player's name
+        const name = player.name;
+
+        // Get player's current location
+        const { x, y, z } = player.location;
+
+        // Get player's dimension (Overworld, Nether, End)
+        const dimension = player.dimension.id;
+
+        // Log the player's info truncate to whole numbers
+        // console.log(
+        //   `[TRACKING] ${name} is at X:${Math.floor(x)}, Y:${Math.floor(y)}, Z:${Math.floor(z)} in ${dimension}`
+        // );
+
+      } catch (playerError) {
+        console.error(`Error tracking player: ${player.name}`, playerError);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to track players:", err);
+  }
+}, INTERVAL);
+
 
 world.afterEvents.entityDie.subscribe((eventData) => {
   const deadEntity = eventData.deadEntity;
@@ -6,11 +44,14 @@ world.afterEvents.entityDie.subscribe((eventData) => {
   const getLocation = () => {
     if (deadEntity) {
       const location = {
-        x: deadEntity.location.x,
-        y: deadEntity.location.y,
-        z: deadEntity.location.z,
+        x: Math.floor(deadEntity.location.x),
+        y: Math.floor(deadEntity.location.y),
+        z: Math.floor(deadEntity.location.z),
       };
-      return location;
+
+      const dimension = deadEntity.dimension;
+
+      return `${location.x}, ${location.y}, ${location.z} in ${dimension.id}`;
     }
     return "Unknown Location";
   };
