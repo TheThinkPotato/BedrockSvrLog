@@ -1,4 +1,6 @@
 ﻿using BedrockSvrLog.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BedrockSvrLog;
 
@@ -144,5 +146,34 @@ public class DbHelpers
         {
             FileHelpers.writeToDebugFile($"Error adding realm event to DB: {ex}");
         }
+    }
+
+    public async Task UpdateUserLocationAsync(EntityLocation location, CancellationToken ct)
+    {
+        FileHelpers.writeToDebugFile($"Debug: Updating user location in database: XUID: {location.EntityName}, Location: {location}");
+
+        var user = await MyAppDbContext.User.Where(u => u.Name == location.EntityName).SingleOrDefaultAsync(ct);
+        if (user != null)
+        {
+            user.LocationX = location.x;
+            user.LocationY = location.y;
+            user.LocationZ = location.z;
+            user.LocationDimension = location.dimension;
+            MyAppDbContext.SaveChanges();
+        }
+    }
+}
+
+public record EntityLocation
+{
+    public string? EntityName { get; set; }
+    public int x { get; set; }
+    public int y { get; set; }
+    public int z { get; set; }
+    public string dimension { get; set; } = string.Empty;
+
+    public override string ToString()
+    {
+        return $"X: {x}, Y: {y}, Z: {z}, Dimension: {dimension}";
     }
 }

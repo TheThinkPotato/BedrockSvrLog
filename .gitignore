@@ -366,3 +366,10 @@ BedrockSvrLog/app.db-shm
 BedrockSvrLog/app.db
 WebApp/bedrock-svr-log/.env
 /WebApp/bedrock-svr-log/public/map
+BedrockSvrLog/app.db
+WebAPI/app.db
+WebAPI/app.db
+WebAPI/app.db-shm
+WebAPI/app.db-wal
+/WebAPI/wwwroot/map
+BedrockSvrLog/app.db

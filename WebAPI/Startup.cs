@@ -6,7 +6,6 @@ using IniParser.Model;
 
 using IniParser;
 using System.Net;
-using NJsonSchema.Validation.FormatValidators;
 
 namespace WebAPI;
 class Startup
@@ -20,7 +19,27 @@ class Startup
         string dbPath = ini["Database"]["Path"];
         string fullPath = Path.GetFullPath(dbPath);
 
-        
+        //// start new task that runs MapPinUpdater every 5 minutes
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        optionsBuilder.UseSqlite($"Data Source={fullPath}");
+        var mapPinUpdater = new MapPinUpdater(new AppDbContext(optionsBuilder.Options));
+
+        Task.Run(async () =>
+        {
+            while (true)
+            {
+                try
+                {
+                    await mapPinUpdater.createUnMinedCustomMarkerJsAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating custom markers: {ex.Message}");
+                }
+                await Task.Delay(TimeSpan.FromMinutes(5));
+            }
+        });
+
         IPAddress hostIp = IPAddress.Parse(ini["WebAPI"]["HostIP"]);
         int hostPort = int.Parse(ini["WebAPI"]["Port"]);
 
@@ -35,6 +54,12 @@ class Startup
 
         bld.Services.AddCors(options =>
         {
+            //options.AddPolicy("AllowAll", builder =>
+            //{
+            //    builder.AllowAnyOrigin()
+            //           .AllowAnyMethod()
+            //           .AllowAnyHeader();
+            //});
             options.AddPolicy("AllowReactApp", builder =>
             {
                 builder
@@ -45,9 +70,6 @@ class Startup
                     .AllowCredentials();
             });
         });
-
-
-
 
         Console.WriteLine($"CORS policy configured to allow React app at: {webAppAddress}");
 
@@ -77,6 +99,8 @@ class Startup
 
         app.UseFastEndpoints()
            .UseSwaggerGen();
+
+        app.UseCors("AllowAll");
 
         app.MapFallbackToFile("index.html");
 

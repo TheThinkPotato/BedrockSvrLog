@@ -19,6 +19,7 @@ class Program
     public const string PlayerSpawnString = "Player Spawned:";
     public const string PlayerConnectedString = "Player connected:";
     public const string PlayerDisconnectedString = "Player disconnected:";
+    public const string ApiBridgeScriptString = "[Scripting]";
 
     protected static AppDbContext MyAppDbContext;
     public static DbHelpers dbHelpers;
@@ -84,26 +85,34 @@ class Program
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
-                    if (line != null && LogHelpers.ContainsPlayerIgnored(line)) ;
-                    if (line != null && line.Contains(RealmLogString))
+                    if (line != null && LogHelpers.ContainsPlayerIgnored(line));
+                    if (line != null && line.Contains(ApiBridgeScriptString))
+                    {
+                        var locationDetails = LogHelpers.GetLocationDataFromString(line);
+                        if (locationDetails != null)
+                        {
+                            await dbHelpers.UpdateUserLocationAsync(locationDetails, new CancellationToken());
+                        }
+                    }
+                    else if (line != null && line.Contains(RealmLogString))
                     {
                         dbHelpers.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
                     }
                     else if (line != null && line.Contains(PlayerConnectedString))
                     {
-                        dbHelpers.addUserToDb(LogHelpers.getPlayerNameFromLogLine(line), LogHelpers.getXuidFromLogLine(line), null);
-                        dbHelpers.addUserLoginToDb(LogHelpers.getXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        dbHelpers.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
+                        dbHelpers.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
                     }
 
                     else if (line != null && line.Contains(PlayerSpawnString))
                     {
-                        dbHelpers.updateuserPfid(LogHelpers.getXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
-                        dbHelpers.updateUserLoginSpawnTime(LogHelpers.getXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        dbHelpers.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
+                        dbHelpers.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
                     }
 
                     else if (line != null && line.Contains(PlayerDisconnectedString))
                     {
-                        dbHelpers.updateUserLoginLogoutTime(LogHelpers.getXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        dbHelpers.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
                     }
                 }
             });

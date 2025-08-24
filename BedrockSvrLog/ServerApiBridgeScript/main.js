@@ -1,4 +1,4 @@
-﻿import { world, system } from "@minecraft/server";
+﻿﻿import { system, world } from "@minecraft/server";
 
 // Run every 30 seconds (600 ticks, since 20 ticks = 1 second)
 const INTERVAL = 30 * 20;
@@ -23,11 +23,11 @@ system.runInterval(() => {
         // Get player's dimension (Overworld, Nether, End)
         const dimension = player.dimension.id;
 
-        // Log the player's info truncate to whole numbers
-        // console.log(
-        //   `[TRACKING] ${name} is at X:${Math.floor(x)}, Y:${Math.floor(y)}, Z:${Math.floor(z)} in ${dimension}`
-        // );
-
+        console.log(
+          `[TRACKING] ${name} is at X:${Math.floor(x)}, Y:${Math.floor(
+            y
+          )}, Z:${Math.floor(z)} in ${dimension}`
+        );
       } catch (playerError) {
         console.error(`Error tracking player: ${player.name}`, playerError);
       }
@@ -36,7 +36,6 @@ system.runInterval(() => {
     console.error("Failed to track players:", err);
   }
 }, INTERVAL);
-
 
 world.afterEvents.entityDie.subscribe((eventData) => {
   const deadEntity = eventData.deadEntity;

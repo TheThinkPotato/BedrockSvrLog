@@ -1,4 +1,6 @@
-﻿namespace BedrockSvrLog;
+﻿using System.Text.RegularExpressions;
+
+namespace BedrockSvrLog;
 
 public static class LogHelpers
 {
@@ -116,7 +118,7 @@ public static class LogHelpers
         return false; // Player is not in the ignore list
     }
 
-    public static string getPlayerNameFromLogLine(string logLine)
+    public static string GetPlayerNameFromLogLine(string logLine)
     {
         // Data looks like this. NO LOG FILE! - [2025-08-06 16:27:06:947 INFO] Player connected: RandomPlayer, xuid: 1234567890123456
         // Also look like this. NO LOG FILE! - [2025-08-06 16:27:10:488 INFO] Player disconnected: RandomPlayer, xuid: 1234567890123456, pfid: a12ab345678c9d01
@@ -129,7 +131,7 @@ public static class LogHelpers
         return logLine.Substring(startIndex, endIndex - startIndex).Trim().Replace("disconnected:", "").Replace("Spawned: ", "").Replace("connected: ", "");
     }
 
-    public static string getXuidFromLogLine(string logLine)
+    public static string GetXuidFromLogLine(string logLine)
     {
         // Data looks like this. NO LOG FILE! - [2025-08-06 16:27:06:947 INFO] Player connected: RandomPlayer, xuid: 1234567890123456
         // Also look like this. NO LOG FILE! - [2025-08-06 16:27:10:488 INFO] Player disconnected: RandomPlayer, xuid: 1234567890123456, pfid: a12ab345678c9d01
@@ -142,5 +144,26 @@ public static class LogHelpers
         }
 
         return logLine.Substring(startIndex, endIndex - startIndex).Trim();
+    }
+
+    public static EntityLocation? GetLocationDataFromString(string logLine)
+    {
+        //NO LOG FILE! - [2025 - 08 - 24 15:25:34:604 INFO][Scripting][TRACKING] MrPlayerName is at X:0, Y: 77, Z: -23 in minecraft: overworld
+
+        string pattern = @"\[TRACKING\]\s+(.+?)\s+is at X:\s*(-?\d+),\s*Y:\s*(-?\d+),\s*Z:\s*(-?\d+)\s+in\s+minecraft:\s*(\S+)";
+        Match match = Regex.Match(logLine, pattern);
+        if (!match.Success)
+        {
+            FileHelpers.writeToDebugFile($"Error: Unable to extract location data from log line: {logLine}");
+            return null;
+        }
+        return new EntityLocation
+        {
+            EntityName = match.Groups[1].Value.Trim(),
+            x = int.Parse(match.Groups[2].Value),
+            y = int.Parse(match.Groups[3].Value),
+            z = int.Parse(match.Groups[4].Value),
+            dimension = match.Groups[5].Value.Trim()
+        };
     }
 }

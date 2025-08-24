@@ -10,6 +10,11 @@ public class User
     public ICollection<Login> Logins { get; set; }
     public ICollection<RealmEvent> RealmEvents { get; set; }
 
+    public int? LocationX { get; set; }
+    public int? LocationY { get; set; }
+    public int? LocationZ { get; set; }
+    public string? LocationDimension { get; set; }
+
     public User()
 	{
 	}
