@@ -36,7 +36,7 @@ class Startup
                 {
                     Console.WriteLine($"Error updating custom markers: {ex.Message}");
                 }
-                await Task.Delay(TimeSpan.FromMinutes(5));
+                await Task.Delay(TimeSpan.FromSeconds(30));
             }
         });
 
