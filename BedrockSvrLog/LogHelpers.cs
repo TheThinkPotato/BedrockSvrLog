@@ -146,6 +146,28 @@ public static class LogHelpers
         return logLine.Substring(startIndex, endIndex - startIndex).Trim();
     }
 
+    public static TimeAndDay GetTimeAndDayFromString(string logLine)
+    {
+        //[2025-08-25 20:28:56:884 INFO] [Scripting] [TIME] Day: 137 Time of Day: 15708
+        var regex = new Regex(@"Day:\s*(\d+)\s*Time of Day:\s*(\d+)", RegexOptions.IgnoreCase);
+
+        var match = regex.Match(logLine);
+        if (match.Success)
+        {
+            return new TimeAndDay
+            {
+                Day = int.Parse(match.Groups[1].Value),
+                Time = match.Groups[2].Value
+            };
+        }
+
+        return new TimeAndDay
+        {
+            Day = -1,
+            Time = ""
+        };
+    }
+
     public static EntityLocation? GetLocationDataFromString(string logLine)
     {
         //NO LOG FILE! - [2025 - 08 - 24 15:25:34:604 INFO][Scripting][TRACKING] MrPlayerName is at X:0, Y: 77, Z: -23 in minecraft: overworld

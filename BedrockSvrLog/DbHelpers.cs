@@ -12,6 +12,76 @@ public class DbHelpers
     {
         MyAppDbContext = myAppDbContext;
     }
+
+    public void UpdateWorldName(string worldName)
+    {
+        try
+        {
+            var world = MyAppDbContext.World.FirstOrDefault();
+            if (world == null)
+            {
+                world = new World
+                {
+                    Name = worldName
+                };
+                MyAppDbContext.World.Add(world);
+            }
+            else
+            {
+                world.Name = worldName;
+            }
+            MyAppDbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            FileHelpers.writeToDebugFile($"Error updating world name in DB: {ex}");
+        }
+    }
+
+    public void UpdateWorldSeed(string worldSeed)
+    {
+        try
+        {
+            var world = MyAppDbContext.World.FirstOrDefault();
+            if (world == null)
+            {
+                world = new World
+                {
+                    Seed = worldSeed
+                };
+                MyAppDbContext.World.Add(world);
+            }
+            else
+            {
+                world.Seed = worldSeed;
+            }
+            MyAppDbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            FileHelpers.writeToDebugFile($"Error updating world seed in DB: {ex}");
+        }
+    }
+
+
+    public async Task UpdateWorldTimeAndDay(TimeAndDay timeAndDay, CancellationToken ct)
+    {
+        try
+        {
+            var world = await MyAppDbContext.World.FirstOrDefaultAsync(ct);
+            
+            if (world != null)
+            {
+                world.CurrentDay = timeAndDay.Day;
+                world.CurrentTime = timeAndDay.Time;
+                MyAppDbContext.SaveChanges();
+            }
+        }
+        catch (Exception ex)
+        {
+            FileHelpers.writeToDebugFile($"Error updating world day and time in DB: {ex}");
+        }
+    }
     public void addUserToDb(string name, string xuid, string? pfid)
     {
         FileHelpers.writeToDebugFile($"Debug: Adding new user to database: Name: {name}, XUID: {xuid}, PFID: {pfid}");
@@ -176,4 +246,10 @@ public record EntityLocation
     {
         return $"X: {x}, Y: {y}, Z: {z}, Dimension: {dimension}";
     }
+}
+
+public record TimeAndDay
+{
+    public required string Time { get; set; }
+    public int Day { get; set; }
 }

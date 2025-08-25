@@ -7,6 +7,10 @@ system.runInterval(() => {
   try {
     // Get all players in the world
     const players = world.getPlayers();
+    const timeOfDay = world.getTimeOfDay();
+    const dayNumber = world.getDay();
+
+    console.log(`[TIME] Day: ${dayNumber} Time of Day: ${timeOfDay}`);
 
     if (players.length === 0) {
       return;

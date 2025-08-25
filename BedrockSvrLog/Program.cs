@@ -6,7 +6,7 @@ namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.2d";
+    public const string Version = "0.2e";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public static string bedrockServerFolderLocation = @"..\";
@@ -27,7 +27,7 @@ class Program
     private const string SplashText = $"\t{Title} Version {Version}\n\tBy Daniel Lopez.";
     static async Task Main(string[] args)
     {
-        
+
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseSqlite("Data Source=app.db");
         MyAppDbContext = new AppDbContext(optionsBuilder.Options);
@@ -37,15 +37,32 @@ class Program
 
         // Calcualte the acutual folder on the drive
         bedrockServerFolderLocation = Path.GetFullPath(bedrockServerFolderLocation);
-        
-        underlinedText( SplashText, '=', 1);
+
+        underlinedText(SplashText, '=', 1);
 
         ServerApiBridgeScript.checkSetupServerApiBridgeScript();
-        
-        underline(SplashText.Length, '=',1,2);
+
+        underline(SplashText.Length, '=', 1, 1);
 
         try
         {
+
+            var worldName = FileHelpers.GetWorldNameFromConfig(bedrockServerFolderLocation);
+            var worldSeed = FileHelpers.GetWorldSeedFromConfig(bedrockServerFolderLocation);
+
+            if (!string.IsNullOrEmpty(worldName))
+            {
+                Console.WriteLine($"World Name: {worldName}");
+                dbHelpers.UpdateWorldName(worldName);
+            }
+
+            if (!string.IsNullOrEmpty(worldSeed))
+            {
+                Console.WriteLine($"World Seed: {worldSeed}\n");
+                dbHelpers.UpdateWorldSeed(worldSeed);
+            }
+
+            underline(SplashText.Length, '=', 0, 2);
 
             LogHelpers.InitiliazeAndLoadPlayerIgnoreList();
 
@@ -63,12 +80,12 @@ class Program
 
             var exeFullPath = Path.Combine(bedrockServerFolderLocation, psi.FileName);
 
-                if (!File.Exists(exeFullPath))
-                {
-                    Console.WriteLine($"Error:\tThe file '{exeFullPath}' does not exist.\n\tPlease ensure that the folder is in bedrock server folder.\n Current folder: {bedrockServerFolderLocation} ");
-                    return;
-                }
-                psi.FileName = exeFullPath;
+            if (!File.Exists(exeFullPath))
+            {
+                Console.WriteLine($"Error:\tThe file '{exeFullPath}' does not exist.\n\tPlease ensure that the folder is in bedrock server folder.\n Current folder: {bedrockServerFolderLocation} ");
+                return;
+            }
+            psi.FileName = exeFullPath;
 
 
             FileHelpers.CheckCreateLogFolder();
@@ -85,9 +102,16 @@ class Program
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
-                    if (line != null && LogHelpers.ContainsPlayerIgnored(line));
+                    if (line != null && LogHelpers.ContainsPlayerIgnored(line)) ;
                     if (line != null && line.Contains(ApiBridgeScriptString))
                     {
+                        var timeAndDay = LogHelpers.GetTimeAndDayFromString(line);
+
+                        if (timeAndDay != null && timeAndDay.Day != -1)
+                        {
+                            await dbHelpers.UpdateWorldTimeAndDay(timeAndDay, new CancellationToken());
+                        }
+
                         var locationDetails = LogHelpers.GetLocationDataFromString(line);
                         if (locationDetails != null)
                         {

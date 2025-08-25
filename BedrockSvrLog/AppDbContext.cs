@@ -9,6 +9,7 @@ namespace BedrockSvrLog.Data
         public DbSet<User> User => Set<User>();
         public DbSet<Login> Login => Set<Login>();
         public DbSet<RealmEvent> RealmEvent => Set<RealmEvent>();
+        public DbSet<World> World => Set<World>();
 
         public AppDbContext(string connectionString)
         {
