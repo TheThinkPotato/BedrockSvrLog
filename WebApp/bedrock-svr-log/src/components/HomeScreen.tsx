@@ -1,9 +1,11 @@
 import { Box } from '@mui/material'
+import DataHub from './DataHub'
 
 const HomeScreen = () => {
   return (
     <Box className="w-full h-full p-4">
       <Box className="w-full h-full rounded-lg overflow-hidden border border-gray-700">
+        <DataHub />
         <iframe
           src="map/index.html"
           title="Bedrock Server Map"

@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
+using BedrockSvrLog.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.DataHub;
 
 public class DataHub : Hub
 {
+    private readonly AppDbContext _db;
+
+    public DataHub(AppDbContext db)
+    {
+        _db = db;
+    }
     public async Task SendMessage(string data) // Fixed typo: SendMEssage -> SendMessage
     {
         await Clients.All.SendAsync("ReceiveData", data);
@@ -14,9 +21,18 @@ public class DataHub : Hub
     public async Task SendPing(string message)
     {
         Console.WriteLine($"Ping received: {message}");
-        await Clients.Caller.SendAsync("ReceivePong", $"Pong: {message}");
+        await Clients.Caller.SendAsync("ReceivePong", $"Pong: {message} {DateTime.Now.ToLongTimeString()}");
     }
 
+    public async Task SendWorldData()
+    {
+        var worldData = await _db.World
+            .FirstOrDefaultAsync();
+
+        var worldDataJson = System.Text.Json.JsonSerializer.Serialize(worldData, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+
+        await Clients.All.SendAsync("ReceiveWorldData", worldDataJson);
+    }
 }
 
 public class MessageScheduler : BackgroundService
