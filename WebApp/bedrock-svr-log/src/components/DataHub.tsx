@@ -18,7 +18,7 @@ const SignalRTest: React.FC = () => {
   );
   const [messages, setMessages] = useState<string[]>([]);
 
-  const [shownTime,setShownTime] = useState<number>(0);
+  const [shownTime,setShownTime] = useState<number>(NaN);
 
   useEffect(() => {
     setConnection(dataHubConnection);

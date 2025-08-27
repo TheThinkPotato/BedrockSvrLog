@@ -1,18 +1,18 @@
-type minecraftWorldInfo = {
+type MinecraftWorldInfo = {
   ticks: number;
   totalTicks: number;
   time: string;
   isDay: boolean;
   isDayIcon: string;
-  timeColor: skyColor;
+  timeColor: SkyColor;
 };
 
-type skyColor = {
+type SkyColor = {
     color1: string;
     color2: string;
   };
 
-type amPmTime = {
+type AmPmTime = {
   hours: string;
   minutes: string;
   amPm: string;
@@ -66,7 +66,7 @@ export const formatDateTime = (input: string) => {
 export const getTimeDifferenceTimeDateFull = (
   currentDateTime: Date,
   time: string
-): minecraftWorldInfo => {
+): string => {
   // const now = new Date();
   const spawnDate = new Date(time);
   const timeDiff = currentDateTime.getTime() - spawnDate.getTime();
@@ -74,15 +74,11 @@ export const getTimeDifferenceTimeDateFull = (
   const hours = Math.floor(timeDiff / (1000 * 60 * 60));
   const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-  // return `${hours}h ${minutes}m ${seconds}s`;
-  return {
-    ticks: timeDiff,
-    time: `${hours}h ${minutes}m ${seconds}s`,
-    isDay: hours < 37000,
-  } as minecraftWorldInfo;
+  
+  return `${hours}h ${minutes}m ${seconds}s`;
 };
 
-export const minecraftTimeDayConvert = (ticks: number): minecraftWorldInfo => {
+export const minecraftTimeDayConvert = (ticks: number): MinecraftWorldInfo => {
   // Normalize to 0 - 23999
   const normalizedTicks = ticks % 24000;
 
@@ -99,10 +95,10 @@ export const minecraftTimeDayConvert = (ticks: number): minecraftWorldInfo => {
     isDay: isDay,
     isDayIcon: isDayIcon,
     timeColor: dayNightSkyColor(normalizedTicks),
-  } as minecraftWorldInfo;
+  } as MinecraftWorldInfo;
 };
 
-export const minecraftTicksToTimeObject = (ticks: number): amPmTime => {
+export const minecraftTicksToTimeObject = (ticks: number): AmPmTime => {
   // Normalize to 0 - 23999
   const normalizedTicks = ticks % 24000;
 
@@ -116,7 +112,7 @@ export const minecraftTicksToTimeObject = (ticks: number): amPmTime => {
       minutes: "00",
       amPm: "AM",
       noTimeYet: true,
-    } as amPmTime;
+    } as AmPmTime;
   }
 
   // Convert 24-hour format to 12-hour AM/PM format
@@ -132,7 +128,7 @@ export const minecraftTicksToTimeObject = (ticks: number): amPmTime => {
     minutes: formattedMinutes,
     amPm: amPm,
     noTimeYet: false,
-  } as amPmTime;
+  } as AmPmTime;
 };
 
 export const minecraftTicksToTime = (ticks: number): string => {
@@ -154,27 +150,28 @@ Minecraft real time to ticks:
 2:00 PM → 8,000 ticks           "11:00 PM" → 17000,
 */
 
-const dayNightSkyColor = (ticks: number): skyColor => {
-  // Normalize ticks in case they exceed 24000
+
+const dayNightSkyColor = (ticks: number): SkyColor => {
+  // Normalize ticks to always stay within 0 → 23999
   const normalizedTicks = ticks % 24000;
 
-  // Night: 6 PM → 5 AM (13000 → 24000, wraps around)
-  if (normalizedTicks >= 13000 && normalizedTicks < 24000) {
+  // Night: 7 PM → 4 AM (13000 → 22000)
+  if (normalizedTicks >= 13000 && normalizedTicks < 22000) {
     return { color1: "#1919D0", color2: "#000000" }; // Dark Blue
 
-    // Morning: 5 AM → 8 AM (23000 → 24000 OR 0 → 2000)
-  } else if (normalizedTicks >= 23000 || normalizedTicks < 2000) {
-    return { color1: "#7060C0", color2: "#5AD" }; // Pinkish Blue
+    // Morning: 4 AM → 6 AM (22000 → 24000) AND (0 → 2000)
+  } else if (normalizedTicks >= 22000 || normalizedTicks < 2000) {
+    return { color1: "#7060C0", color2: "#55AAD5" }; // Pinkish Blue
 
-    // Day: 8 AM → 4 PM (2000 → 10000)
+    // Day: 6 AM → 4 PM (2000 → 10000)
   } else if (normalizedTicks >= 2000 && normalizedTicks < 10000) {
-    return { color1: "#8BE", color2: "#FFF" }; // Light Blue
+    return { color1: "#88BBEE", color2: "#FFFFFF" }; // Light Blue
 
-    // Evening: 4 PM → 7 PM (10000 → 13000)
-  } else if (normalizedTicks >= 10000 && normalizedTicks < 13000) {
-    return { color1: "#9370DB", color2: "#31A" }; // Purplish Blue
+    // Evening: 5 PM → 7 PM (11000 → 13000)
+  } else if (normalizedTicks >= 11000 && normalizedTicks < 13000) {
+    return { color1: "#9370DB", color2: "#3311AA" }; // Purplish Blue
 
-    // Fallback (shouldn't happen)
+    // Fallback (should never happen)
   } else {
     return { color1: "#000000", color2: "#000000" };
   }
