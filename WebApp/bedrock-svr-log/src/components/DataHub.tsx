@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import { Box } from "@mui/material";
 import { minecraftTicksToTime, minecraftTimeDayConvert } from "../Helpers/timeHelper";
+import { dataHubConnection } from "../Api/Api";
 
 export type WorldData = {
   Id: number;
@@ -20,12 +21,7 @@ const SignalRTest: React.FC = () => {
   const [shownTime,setShownTime] = useState<number>(0);
 
   useEffect(() => {
-    const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5000/DataHub") // C# SignalR URL
-      .withAutomaticReconnect()
-      .build();
-
-    setConnection(newConnection);
+    setConnection(dataHubConnection);
   }, []);
 
   useEffect(() => {

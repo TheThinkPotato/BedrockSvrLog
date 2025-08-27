@@ -64,7 +64,7 @@ class Startup
             options.AddPolicy("AllowReactApp", builder =>
             {
                 builder
-                    .WithOrigins(webAppAddress, "http://localhost:5173")
+                    .WithOrigins(webAppAddress, "http://localhost:5173", "http://localhost:5000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
