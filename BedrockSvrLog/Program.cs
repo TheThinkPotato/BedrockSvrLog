@@ -50,6 +50,8 @@ class Program
             var worldName = FileHelpers.GetWorldNameFromConfig(bedrockServerFolderLocation);
             var worldSeed = FileHelpers.GetWorldSeedFromConfig(bedrockServerFolderLocation);
 
+            FileHelpers.CheckCreateLogFolder();
+
             if (!string.IsNullOrEmpty(worldName))
             {
                 Console.WriteLine($"World Name: {worldName}");
@@ -88,7 +90,7 @@ class Program
             psi.FileName = exeFullPath;
 
 
-            FileHelpers.CheckCreateLogFolder();
+
 
             using var process = new Process { StartInfo = psi };
             process.Start();

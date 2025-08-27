@@ -17,6 +17,8 @@ public class DataHub : Hub
         await Clients.All.SendAsync("ReceiveData", data);
     }
 
+
+
     // This method receives a ping and replies directly to the sender
     public async Task SendPing(string message)
     {
