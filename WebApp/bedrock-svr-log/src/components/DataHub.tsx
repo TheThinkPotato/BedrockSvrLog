@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import { Box } from "@mui/material";
-import { minecraftTicksToTime, minecraftTimeDayConvert } from "../Helpers/timeHelper";
+import {
+  minecraftTicksToTime,
+  minecraftTimeDayConvert,
+} from "../Helpers/timeHelper";
 import { dataHubConnection } from "../Api/Api";
 
 export type WorldData = {
@@ -17,15 +20,18 @@ const SignalRTest: React.FC = () => {
     null
   );
   const [messages, setMessages] = useState<string[]>([]);
+  const [shownTime, setShownTime] = useState<number>(NaN);
 
-  const [shownTime,setShownTime] = useState<number>(NaN);
-
+  // Connect to SignalR Hub
   useEffect(() => {
     setConnection(dataHubConnection);
   }, []);
 
+  // Start connection and listen for data
   useEffect(() => {
-    if (!connection) return;
+    if (!connection) {
+      return;
+    }
 
     connection
       .start()
@@ -50,8 +56,12 @@ const SignalRTest: React.FC = () => {
       ? (JSON.parse(messages[messages.length - 1]) as WorldData)
       : undefined;
 
-  // if lastMessage is undefined, get world data from server
-  const currentDay = lastMessage?.CurrentDay ?? connection?.invoke("SendWorldData");
+  // if no messages, send world data
+  if (messages.length === 0 || lastMessage?.CurrentDay === undefined) {
+    connection?.invoke("SendWorldData");
+  }
+
+  const currentDay = lastMessage?.CurrentDay;
 
   const {
     ticks: currentTicks,
@@ -67,7 +77,7 @@ const SignalRTest: React.FC = () => {
     const interval = setInterval(() => {
       if (isNaN(shownTime) || shownTime === 0) {
         setShownTime(currentTicks);
-      }    
+      }
 
       // if current ticks != prev ticks then
       if (currentTicks !== prevTicks.current) {

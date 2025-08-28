@@ -163,8 +163,8 @@ const dayNightSkyColor = (ticks: number): SkyColor => {
   } else if (normalizedTicks >= 22000 || normalizedTicks < 2000) {
     return { color1: "#7060C0", color2: "#55AAD5" }; // Pinkish Blue
 
-    // Day: 6 AM → 4 PM (2000 → 10000)
-  } else if (normalizedTicks >= 2000 && normalizedTicks < 10000) {
+    // Day: 6 AM → 5 PM (2000 → 11000)
+  } else if (normalizedTicks >= 2000 && normalizedTicks < 11000) {
     return { color1: "#88BBEE", color2: "#FFFFFF" }; // Light Blue
 
     // Evening: 5 PM → 7 PM (11000 → 13000)
