@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { useRef } from "react";
-import DataHub from "./DataHub";
+import WorldClock from "./WorldClock";
 
 const HomeScreen = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -20,7 +20,7 @@ const HomeScreen = () => {
   return (
     <Box className="w-full h-full p-4">
       <Box className="w-full h-full rounded-lg overflow-hidden border border-gray-700">
-        <DataHub />
+        <WorldClock />
 
         <Box
           className="fixed z-50"
