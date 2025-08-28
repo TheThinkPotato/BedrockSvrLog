@@ -1,4 +1,5 @@
 using BedrockSvrLog.Data;
+using WebAPI.DataHub;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
@@ -63,20 +64,21 @@ class Startup
             options.AddPolicy("AllowReactApp", builder =>
             {
                 builder
-                    .WithOrigins(webAppAddress)
-                    .WithOrigins("http://localhost:5173")
+                    .WithOrigins(webAppAddress, "http://localhost:5173", "http://localhost:5000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .AllowCredentials();
+                    .AllowCredentials()
+                    .SetIsOriginAllowed(_ => true); // Required for SignalR with WebSockets
             });
         });
 
         Console.WriteLine($"CORS policy configured to allow React app at: {webAppAddress}");
 
+        
+
         // Bind to all network interfaces on port 5000
         bld.WebHost.ConfigureKestrel(options =>
         {
-
             options.Listen(hostIp, hostPort);
             options.ListenAnyIP(5000);
         });
@@ -89,10 +91,13 @@ class Startup
            .AddFastEndpoints()
            .SwaggerDocument();
 
+        bld.Services.AddSignalR();
+        bld.Services.AddHostedService<WebAPI.DataHub.MessageScheduler>();
+
         var app = bld.Build();
 
-        app.UseCors("AllowReactApp")
-            .UseCors("AllowLocalHostDev");
+        //app.UseCors("AllowReactApp")
+        //    .UseCors("AllowLocalHostDev");
 
         app.UseDefaultFiles()
            .UseStaticFiles();
@@ -100,7 +105,9 @@ class Startup
         app.UseFastEndpoints()
            .UseSwaggerGen();
 
-        app.UseCors("AllowAll");
+        app.UseCors("AllowReactApp");
+
+        app.MapHub<DataHub.DataHub>("/dataHub");
 
         app.MapFallbackToFile("index.html");
 
