@@ -232,6 +232,31 @@ public class DbHelpers
             MyAppDbContext.SaveChanges();
         }
     }
+
+    public async Task UpdateMissingUserAvatarLinks(CancellationToken ct)
+    {
+        const string BackgroundColor = "b6e3f4";
+        const string Size = "64";
+
+        var baseUrl = $"https://api.dicebear.com/9.x/pixel-art/svg?seed=gamer&size={Size}&backgroundColor={BackgroundColor}";
+
+        try
+        {
+            var usersWithoutAvatar = await MyAppDbContext.User
+                .Where(u => string.IsNullOrEmpty(u.AvatarLink) && !string.IsNullOrEmpty(u.Pfid))
+                .ToListAsync(ct);
+
+            foreach (var user in usersWithoutAvatar)
+            {
+                user.AvatarLink = baseUrl.Replace("gamer",user.Name);
+            }
+            await MyAppDbContext.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            FileHelpers.writeToDebugFile($"Error updating user avatar links in DB: {ex}");
+        }
+    }
 }
 
 public record EntityLocation

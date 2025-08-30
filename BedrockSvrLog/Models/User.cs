@@ -7,6 +7,7 @@ public class User
     [Key]
     public string Xuid { get; set; }
     public string? Pfid { get; set; }
+    public string? AvatarLink { get; set; }
     public ICollection<Login> Logins { get; set; }
     public ICollection<RealmEvent> RealmEvents { get; set; }
 

@@ -38,6 +38,10 @@ class Program
         // Calcualte the acutual folder on the drive
         bedrockServerFolderLocation = Path.GetFullPath(bedrockServerFolderLocation);
 
+
+        //Update missing avatars
+        await dbHelpers.UpdateMissingUserAvatarLinks(new CancellationToken());
+
         underlinedText(SplashText, '=', 1);
 
         ServerApiBridgeScript.checkSetupServerApiBridgeScript();
