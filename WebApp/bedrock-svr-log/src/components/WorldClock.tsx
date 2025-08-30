@@ -38,7 +38,7 @@ const WorldClock = () => {
   return (
     <Box
       className="fixed z-50"
-      style={{
+      sx={{
         left: "3rem",
         top: "1.35rem",
         backgroundColor: "rgba(255, 255, 255, 1)",
@@ -54,15 +54,15 @@ const WorldClock = () => {
       <Box className="flex flex-col gap-2 overflow-y-auto max-h-[200px]">
         <Box
           className="text-sm"
-          style={{
+          sx={{
             fontSize: "16px",
             paddingBlock: "0.2rem",
             paddingInline: "0.5rem",
           }}
         >
-          <Box className="flex flex-row" style={{ gap: "0.5rem" }}>
+          <Box className="flex flex-row" sx={{ gap: "0.5rem" }}>
             <Box
-              style={{
+              sx={{
                 background: `linear-gradient(to top, ${timeColor.color1}, ${timeColor.color2})`,
                 marginTop: "0.1rem",
                 textAlign: "center",

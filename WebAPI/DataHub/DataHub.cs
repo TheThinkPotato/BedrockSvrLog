@@ -36,8 +36,10 @@ public class DataHub : Hub
                 LocationY = l.User.LocationY,
                 LocationZ = l.User.LocationZ,
                 LocationDimension = l.User.LocationDimension,
-                AvatarLink = l.User.AvatarLink
+                AvatarLink = l.User.AvatarLink,
+                SpawnTime = l.SpawnTime
             })
+            .OrderBy(p => p.SpawnTime)
             .ToListAsync();
 
         var worldData = new WorldData
@@ -71,6 +73,7 @@ public record OnlinePlayer
     public int? LocationY { get; set; }
     public int? LocationZ { get; set; }
     public string? LocationDimension { get; set; }
+    public DateTime? SpawnTime { get; set; }
 }
 
 public class MessageScheduler : BackgroundService

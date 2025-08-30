@@ -21,6 +21,7 @@ export type OnlinePlayers = {
   LocationY: number;
   LocationZ: number;
   LocationDimension: string;
+  SpawnTime: string;
 }
 
 interface WorldContextType {
