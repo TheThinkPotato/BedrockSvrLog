@@ -6,7 +6,7 @@ namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.2f";
+    public const string Version = "0.2g";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public static string bedrockServerFolderLocation = @"..\";
@@ -108,17 +108,17 @@ class Program
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
-                    if (line != null && LogHelpers.ContainsPlayerIgnored(line)) ;
+                    if (line != null && LogHelpers.ContainsPlayerIgnored(line));
                     if (line != null && line.Contains(ApiBridgeScriptString))
                     {
-                        var timeAndDay = LogHelpers.GetTimeAndDayFromString(line);
+                        var timeAndDaySpawnPoint = LogHelpers.GetTimeAndDayFromString(line);
+                        var locationDetails = LogHelpers.GetLocationDataFromString(line);
 
-                        if (timeAndDay != null && timeAndDay.Day != -1)
+                        if (timeAndDaySpawnPoint != null && timeAndDaySpawnPoint.Day != -1)
                         {
-                            await dbHelpers.UpdateWorldTimeAndDay(timeAndDay, new CancellationToken());
+                            await dbHelpers.UpdateWorldTableData(timeAndDaySpawnPoint, new CancellationToken());
                         }
 
-                        var locationDetails = LogHelpers.GetLocationDataFromString(line);
                         if (locationDetails != null)
                         {
                             await dbHelpers.UpdateUserLocationAsync(locationDetails, new CancellationToken());

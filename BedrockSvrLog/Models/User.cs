@@ -14,8 +14,12 @@ public class User
     public int? LocationX { get; set; }
     public int? LocationY { get; set; }
     public int? LocationZ { get; set; }
+
     public string? LocationDimension { get; set; }
 
+    public int? SpawnX { get; set; }
+    public int? SpawnY { get; set; }
+    public int? SpawnZ { get; set; }
     public User()
 	{
 	}

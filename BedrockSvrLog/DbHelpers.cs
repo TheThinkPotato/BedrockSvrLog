@@ -64,7 +64,7 @@ public class DbHelpers
     }
 
 
-    public async Task UpdateWorldTimeAndDay(TimeAndDay timeAndDay, CancellationToken ct)
+    public async Task UpdateWorldTableData(WorldTimeDaySpawnPoint worldTimeDaySpawnPoint, CancellationToken ct)
     {
         try
         {
@@ -72,8 +72,11 @@ public class DbHelpers
             
             if (world != null)
             {
-                world.CurrentDay = timeAndDay.Day;
-                world.CurrentTime = timeAndDay.Time;
+                world.CurrentDay = worldTimeDaySpawnPoint.Day;
+                world.CurrentTime = worldTimeDaySpawnPoint.Time;
+                world.SpawnX = worldTimeDaySpawnPoint.SpawnX;
+                world.SpawnY = worldTimeDaySpawnPoint.SpawnY;
+                world.SpawnZ = worldTimeDaySpawnPoint.SpawnZ;
                 MyAppDbContext.SaveChanges();
             }
         }
@@ -229,6 +232,9 @@ public class DbHelpers
             user.LocationY = location.y;
             user.LocationZ = location.z;
             user.LocationDimension = location.dimension;
+            user.SpawnX = location.SpawnX;
+            user.SpawnY = location.SpawnY;
+            user.SpawnZ = location.SpawnZ;
             MyAppDbContext.SaveChanges();
         }
     }
@@ -265,6 +271,9 @@ public record EntityLocation
     public int x { get; set; }
     public int y { get; set; }
     public int z { get; set; }
+    public int? SpawnX { get; set; }
+    public int? SpawnY { get; set; }
+    public int? SpawnZ { get; set; }
     public string dimension { get; set; } = string.Empty;
 
     public override string ToString()
@@ -273,8 +282,11 @@ public record EntityLocation
     }
 }
 
-public record TimeAndDay
+public record WorldTimeDaySpawnPoint
 {
     public required string Time { get; set; }
     public int Day { get; set; }
+    public int? SpawnX { get; set; }
+    public int? SpawnY { get; set; }
+    public int? SpawnZ { get; set; }
 }

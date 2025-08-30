@@ -146,33 +146,41 @@ public static class LogHelpers
         return logLine.Substring(startIndex, endIndex - startIndex).Trim();
     }
 
-    public static TimeAndDay GetTimeAndDayFromString(string logLine)
+    public static WorldTimeDaySpawnPoint GetTimeAndDayFromString(string logLine)
     {
-        //[2025-08-25 20:28:56:884 INFO] [Scripting] [TIME] Day: 137 Time of Day: 15708
-        var regex = new Regex(@"Day:\s*(\d+)\s*Time of Day:\s*(\d+)", RegexOptions.IgnoreCase);
+        //Example input: NO LOG FILE! - [2025-08-30 20:18:25:400 INFO] [Scripting] [TIME] Day: 20 Time of Day: 8300 World SpawnX: 0 SpawnY: 32767 SpawnZ: 0
+        var regex = new Regex(
+        @"Day:\s*(\d+)\s*Time\s+of\s+Day:\s*(\d+).*?SpawnX:\s*(-?\d+)\s*SpawnY:\s*(-?\d+)\s*SpawnZ:\s*(-?\d+)", RegexOptions.IgnoreCase);
 
         var match = regex.Match(logLine);
         if (match.Success)
         {
-            return new TimeAndDay
+            return new WorldTimeDaySpawnPoint
             {
                 Day = int.Parse(match.Groups[1].Value),
-                Time = match.Groups[2].Value
+                Time = match.Groups[2].Value,
+                SpawnX = int.Parse(match.Groups[3].Value),
+                SpawnY = int.Parse(match.Groups[4].Value),
+                SpawnZ = int.Parse(match.Groups[5].Value)
             };
         }
 
-        return new TimeAndDay
+        return new WorldTimeDaySpawnPoint
         {
             Day = -1,
-            Time = ""
+            Time = "",
+            SpawnX = null,
+            SpawnY = null,
+            SpawnZ = null
         };
     }
 
     public static EntityLocation? GetLocationDataFromString(string logLine)
     {
         //NO LOG FILE! - [2025 - 08 - 24 15:25:34:604 INFO][Scripting][TRACKING] MrPlayerName is at X:0, Y: 77, Z: -23 in minecraft: overworld
+        // Example input: NO LOG FILE! - [2025-08-30 20:50:48:557 INFO] [Scripting] [TRACKING] TheStinkPotatoe is at X:241, Y:83, Z:396 in minecraft:overworld. SpawnPoint SpawnX: 236, SpawnY: 86, SpawnZ: 398
 
-        string pattern = @"\[TRACKING\]\s+(.+?)\s+is at X:\s*(-?\d+),\s*Y:\s*(-?\d+),\s*Z:\s*(-?\d+)\s+in\s+minecraft:\s*(\S+)";
+        string pattern = @"\[TRACKING\]\s+(.+?)\s+is at X:\s*(-?\d+),\s*Y:\s*(-?\d+),\s*Z:\s*(-?\d+)\s+in\s+minecraft:([^\.\s]+)\.\s*SpawnPoint\s*SpawnX:\s*(-?\d+),\s*SpawnY:\s*(-?\d+),\s*SpawnZ:\s*(-?\d+)";
         Match match = Regex.Match(logLine, pattern);
         if (!match.Success)
         {
@@ -185,7 +193,10 @@ public static class LogHelpers
             x = int.Parse(match.Groups[2].Value),
             y = int.Parse(match.Groups[3].Value),
             z = int.Parse(match.Groups[4].Value),
-            dimension = match.Groups[5].Value.Trim()
+            dimension = match.Groups[5].Value.Trim(),
+            SpawnX = int.TryParse(match.Groups[6].Value, out var sx) ? sx : (int?)null,
+            SpawnY = int.TryParse(match.Groups[7].Value, out var sy) ? sy : (int?)null,
+            SpawnZ = int.TryParse(match.Groups[8].Value, out var sz) ? sz : (int?)null
         };
     }
 }

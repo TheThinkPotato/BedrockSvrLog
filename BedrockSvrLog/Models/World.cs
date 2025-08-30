@@ -11,5 +11,9 @@ namespace BedrockSvrLog.Data
         public string CurrentTime { get; set; } = string.Empty;
         public int CurrentDay { get; set; }
         public string Seed { get; set; } = string.Empty;
+
+        public int? SpawnX { get; set; }
+        public int? SpawnY { get; set; }
+        public int? SpawnZ { get; set; }
     }
 }
