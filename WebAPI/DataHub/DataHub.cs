@@ -12,12 +12,6 @@ public class DataHub : Hub
     {
         _db = db;
     }
-    public async Task SendMessage(string data) // Fixed typo: SendMEssage -> SendMessage
-    {
-        await Clients.All.SendAsync("ReceiveData", data);
-    }
-
-
 
     // This method receives a ping and replies directly to the sender
     public async Task SendPing(string message)
@@ -28,13 +22,55 @@ public class DataHub : Hub
 
     public async Task SendWorldData()
     {
-        var worldData = await _db.World
+        var world = await _db.World
             .FirstOrDefaultAsync();
+
+        var onlinePlayers = await _db.Login
+            .Where(l => l.LogoutTime == null && l.SpawnTime != null)
+            .Select(l => new OnlinePlayer
+            {
+                Name = l.User.Name,
+                Xuid = l.Xuid,
+                Pfid = l.User.Pfid,
+                LocationX = l.User.LocationX,
+                LocationY = l.User.LocationY,
+                LocationZ = l.User.LocationZ,
+                LocationDimension = l.User.LocationDimension,
+                AvatarLink = l.User.AvatarLink
+            })
+            .ToListAsync();
+
+        var worldData = new WorldData
+        {
+            Id = world?.Id ?? 0,
+            Name = world?.Name ?? "Bedrock Level",
+            CurrentTime = world?.CurrentTime ?? "Unknown",
+            CurrentDay = world?.CurrentDay ?? 0,
+            Seed = world?.Seed ?? "random seed",
+            OnlinePlayers = onlinePlayers
+        };
 
         var worldDataJson = System.Text.Json.JsonSerializer.Serialize(worldData, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
 
         await Clients.All.SendAsync("ReceiveWorldData", worldDataJson);
     }
+}
+
+public class WorldData : World
+{
+    public List<OnlinePlayer>? OnlinePlayers { get; set; }
+}
+
+public record OnlinePlayer
+{
+    public string? Name { get; set; }
+    public string Xuid { get; set; }
+    public string? Pfid { get; set; }
+    public string? AvatarLink { get; set; }
+    public int? LocationX { get; set; }
+    public int? LocationY { get; set; }
+    public int? LocationZ { get; set; }
+    public string? LocationDimension { get; set; }
 }
 
 public class MessageScheduler : BackgroundService

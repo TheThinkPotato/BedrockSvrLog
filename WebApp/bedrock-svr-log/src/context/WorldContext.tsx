@@ -3,11 +3,24 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import { dataHubConnection } from "../Api/Api";
 
-export interface WorldData {
-  CurrentDay: number;
+export type WorldData = {
+  Name: string;
   CurrentTime: number;
+  CurrentDay: number;
+  Seed: string;
   Weather?: string;
-  [key: string]: unknown; // fallback for other fields from server
+  OnlinePlayers: OnlinePlayers[];
+}
+
+export type OnlinePlayers = {
+  Name: string;
+  Xuid: string;
+  Pfid: string;
+  AvatarLink: string;
+  LocationX: number;
+  LocationY: number;
+  LocationZ: number;
+  LocationDimension: string;
 }
 
 interface WorldContextType {
@@ -18,9 +31,7 @@ interface WorldContextType {
 
 const WorldContext = createContext<WorldContextType | undefined>(undefined);
 
-export const WorldProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const WorldProvider = ({ children }: { children: React.ReactNode }) => {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
     null
   );

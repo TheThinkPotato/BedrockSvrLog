@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { useRef } from "react";
 import WorldClock from "./WorldClock";
+import OnlineUserIndicator from "./OnlineUserIndicator";
 
 const HomeScreen = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -21,6 +22,7 @@ const HomeScreen = () => {
     <Box className="w-full h-full p-4">
       <Box className="w-full h-full rounded-lg overflow-hidden border border-gray-700">
         <WorldClock />
+        <OnlineUserIndicator />
 
         <Box
           className="fixed z-50"
