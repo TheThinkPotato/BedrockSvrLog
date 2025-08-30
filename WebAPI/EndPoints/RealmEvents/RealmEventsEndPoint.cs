@@ -23,14 +23,14 @@ public class RealmEventsEndpoint : EndpointWithoutRequest<RealmsEventResponse>
     {
         var realmEvetns = await _db.User
         .Join(_db.RealmEvent, u => u.Xuid, r => r.Xuid, (u, r) => new { u, r })
-        .Select(realEvent => new RealmEventDetails
+        .Select(realmEvent => new RealmEventDetails
         {
-            Name = realEvent.u.Name,
-            Xuid = realEvent.u.Xuid,
-            Pfid = realEvent.u.Pfid,
-            RealmEvent = realEvent.r.EventType,
-            EventTime = realEvent.r.EventTime,
-            DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(realEvent.u.Name)
+            Name = realmEvent.u.Name,
+            Xuid = realmEvent.u.Xuid,
+            Pfid = realmEvent.u.Pfid,
+            RealmEvent = realmEvent.r.EventType,
+            EventTime = realmEvent.r.EventTime,
+            DiceBearAvatarUrl = realmEvent.u.AvatarLink ?? AvatarHelper.GetDiceBearAvatarUrl(realmEvent.u.Name)
         })
         .OrderByDescending(r => r.EventTime) 
         .ToListAsync(ct);

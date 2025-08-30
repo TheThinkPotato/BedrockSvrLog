@@ -31,7 +31,7 @@ public class UsersOnlineEndpoint : EndpointWithoutRequest<UsersOnlineResponse>
                 Pfid = u.u.Pfid,
                 LastLogin = u.l.LoginTime,
                 SpawnTime = u.l.SpawnTime ?? DateTime.MinValue,
-                DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(u.u.Name)
+                DiceBearAvatarUrl = u.u.AvatarLink ?? AvatarHelper.GetDiceBearAvatarUrl(u.u.Name)
             }).ToListAsync(ct);
 
         await Send.OkAsync( new UsersOnlineResponse {Users = users }, ct);

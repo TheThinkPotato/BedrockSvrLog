@@ -27,7 +27,7 @@ public class UsersEndpoint : EndpointWithoutRequest<UsersResponse>
                 Name = u.Name,
                 Xuid = u.Xuid,
                 Pfid = u.Pfid,
-                DiceBearAvatarUrl = AvatarHelper.GetDiceBearAvatarUrl(u.Name)
+                DiceBearAvatarUrl = u.AvatarLink ?? AvatarHelper.GetDiceBearAvatarUrl(u.Name)
             }).ToListAsync(ct);
 
         await Send.OkAsync( new UsersResponse {Users = users }, ct);
