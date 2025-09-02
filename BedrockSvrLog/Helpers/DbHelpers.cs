@@ -269,6 +269,7 @@ public class DbHelpers
             Xuid = userDetails.Xuid ?? "Unknown",
             KillTime = DateTime.Now,
             EntityType = entityDeath.EntityType,
+            GameDay = currentWorldDetails.CurrentDay,
             GameTime = currentWorldDetails.CurrentTime,
             SpawnPositionX = userDetails.LocationX ?? currentWorldDetails.SpawnX,
             SpawnPositionY = userDetails.LocationY ?? currentWorldDetails.SpawnY,
