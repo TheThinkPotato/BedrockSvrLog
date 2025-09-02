@@ -10,5 +10,5 @@ public abstract class LocationEntity
     public int? PositionX { get; set; }
     public int? PositionY { get; set; }
     public int? PositionZ { get; set; }
-    public string? Demension { get; set; } = string.Empty;
+    public string? Dimension { get; set; } = string.Empty;
 }

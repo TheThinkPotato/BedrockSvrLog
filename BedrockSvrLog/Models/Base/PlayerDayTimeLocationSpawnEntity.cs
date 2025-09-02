@@ -8,7 +8,7 @@ namespace BedrockSvrLog.Models.Base
 {
     public abstract class PlayerDayTimeLocationSpawnEntity : LocationEntity
     {
-        public int GameTime { get; set; }
+        public int? GameTime { get; set; }
         public int GameDay { get; set; }
         public int? SpawnPositionX { get; set; }
         public int? SpawnPositionY { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace BedrockSvrLog;
+﻿namespace BedrockSvrLog.Helpers;
 
 public static class FileHelpers
 {

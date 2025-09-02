@@ -1,4 +1,6 @@
 ﻿using BedrockSvrLog.Data;
+using BedrockSvrLog.Helpers;
+using BedrockSvrLog.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -93,9 +95,6 @@ class Program
             }
             psi.FileName = exeFullPath;
 
-
-
-
             using var process = new Process { StartInfo = psi };
             process.Start();
 
@@ -113,6 +112,7 @@ class Program
                     {
                         var timeAndDaySpawnPoint = LogHelpers.GetTimeAndDayFromString(line);
                         var locationDetails = LogHelpers.GetLocationDataFromString(line);
+                        var killDetails = LogHelpers.GetKilledEntity(line);
 
                         if (timeAndDaySpawnPoint != null && timeAndDaySpawnPoint.Day != -1)
                         {
@@ -123,6 +123,12 @@ class Program
                         {
                             await dbHelpers.UpdateUserLocationAsync(locationDetails, new CancellationToken());
                         }
+
+                        if (killDetails != null)
+                        {
+                            await dbHelpers.AddKillEventToDbAsync(killDetails, new CancellationToken());
+                        }
+
                     }
                     else if (line != null && line.Contains(RealmLogString))
                     {

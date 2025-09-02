@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using BedrockSvrLog.Model;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using BedrockSvrLog.Models;
 
-namespace BedrockSvrLog;
+namespace BedrockSvrLog.Helpers;
 
 public class DbHelpers
 {
@@ -240,6 +243,46 @@ public class DbHelpers
         }
     }
 
+    public async Task<User?> getCurrentUserDetails(string gameTagName, CancellationToken ct)
+    {
+        return await MyAppDbContext.User.Where(u => u.Name == gameTagName).SingleOrDefaultAsync(ct);
+    }
+
+    public async Task<World?> getCurrentWorldDetails(CancellationToken ct)
+    {
+        return await MyAppDbContext.World.FirstOrDefaultAsync(ct);
+    }
+
+    public async Task AddKillEventToDbAsync(EntityDeath entityDeath, CancellationToken ct )
+    {
+        var userDetails = await getCurrentUserDetails(entityDeath.PlayerName, ct);
+        var currentWorldDetails = await getCurrentWorldDetails(ct);
+
+        // Break out if no user or world details found
+        if (userDetails == null || currentWorldDetails == null)
+        {
+            return;
+        }
+
+        var playerKillDetails = new PlayerKills
+        {
+            Xuid = userDetails.Xuid ?? "Unknown",
+            KillTime = DateTime.Now,
+            EntityType = entityDeath.EntityType,
+            GameTime = currentWorldDetails.CurrentTime,
+            SpawnPositionX = userDetails.LocationX ?? currentWorldDetails.SpawnX,
+            SpawnPositionY = userDetails.LocationY ?? currentWorldDetails.SpawnY,
+            SpawnPositionZ = userDetails.LocationZ ?? currentWorldDetails.SpawnZ,
+            PositionX = entityDeath.PositionX,
+            PositionY = entityDeath.PositionY,
+            PositionZ = entityDeath.PositionZ,
+            Dimension = entityDeath.Dimension,
+        };
+
+        MyAppDbContext.PlayerKills.Add(playerKillDetails);
+        await MyAppDbContext.SaveChangesAsync(ct);
+    }
+
     public async Task UpdateMissingUserAvatarLinks(CancellationToken ct)
     {
         const string BackgroundColor = "b6e3f4";
@@ -285,9 +328,19 @@ public record EntityLocation
 
 public record WorldTimeDaySpawnPoint
 {
-    public required string Time { get; set; }
+    public int? Time { get; set; }
     public int Day { get; set; }
     public int? SpawnX { get; set; }
     public int? SpawnY { get; set; }
     public int? SpawnZ { get; set; }
+}
+
+public record EntityDeath
+{
+    public string EntityType { get; set; } = string.Empty;
+    public int PositionX { get; set; }
+    public int PositionY { get; set; }
+    public int PositionZ { get; set; }
+    public string Dimension { get; set; } = string.Empty;
+    public string PlayerName { get; set; } = string.Empty;
 }

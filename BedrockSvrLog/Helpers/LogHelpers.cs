@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace BedrockSvrLog;
+namespace BedrockSvrLog.Helpers;
 
 public static class LogHelpers
 {
@@ -158,7 +158,7 @@ public static class LogHelpers
             return new WorldTimeDaySpawnPoint
             {
                 Day = int.Parse(match.Groups[1].Value),
-                Time = match.Groups[2].Value,
+                Time = int.Parse(match.Groups[2].Value),
                 SpawnX = int.Parse(match.Groups[3].Value),
                 SpawnY = int.Parse(match.Groups[4].Value),
                 SpawnZ = int.Parse(match.Groups[5].Value)
@@ -168,10 +168,33 @@ public static class LogHelpers
         return new WorldTimeDaySpawnPoint
         {
             Day = -1,
-            Time = "",
+            Time = null,
             SpawnX = null,
             SpawnY = null,
             SpawnZ = null
+        };
+    }
+
+    public static EntityDeath? GetKilledEntity(string logLine)
+    {
+        // Exmaple [2025-09-02 18:15:26:611 INFO] [Scripting] Script Entity Death: minecraft:wandering_trader at: 266, 75, 399 in minecraft:overworld by: player - ThePlayerMan
+        string pattern = @"Script Entity Death:\s+(\S+)\s+at:\s*(-?\d+),\s*(-?\d+),\s*(-?\d+)\s+in\s+(\S+)\s+by:\s+player\s*-\s*(\S+)";
+
+        const string FilterString = "minecraft:";
+
+        Match match = Regex.Match(logLine, pattern);
+        if (!match.Success)
+        {
+            return null;
+        }
+        return new EntityDeath
+        {
+            EntityType = match.Groups[1].Value.Replace(FilterString,"").Trim(),
+            PositionX = int.Parse(match.Groups[2].Value),
+            PositionY = int.Parse(match.Groups[3].Value),
+            PositionZ = int.Parse(match.Groups[4].Value),
+            Dimension = match.Groups[5].Value.Replace(FilterString,"").Trim(),
+            PlayerName = match.Groups[6].Value.Trim()
         };
     }
 
@@ -179,7 +202,6 @@ public static class LogHelpers
     {
         //NO LOG FILE! - [2025 - 08 - 24 15:25:34:604 INFO][Scripting][TRACKING] MrPlayerName is at X:0, Y: 77, Z: -23 in minecraft: overworld
         // Example input: NO LOG FILE! - [2025-08-30 20:50:48:557 INFO] [Scripting] [TRACKING] TheStinkPotatoe is at X:241, Y:83, Z:396 in minecraft:overworld. SpawnPoint SpawnX: 236, SpawnY: 86, SpawnZ: 398
-
         string pattern = @"\[TRACKING\]\s+(.+?)\s+is at X:\s*(-?\d+),\s*Y:\s*(-?\d+),\s*Z:\s*(-?\d+)\s+in\s+minecraft:([^\.\s]+)\.\s*SpawnPoint\s*SpawnX:\s*(-?\d+),\s*SpawnY:\s*(-?\d+),\s*SpawnZ:\s*(-?\d+)";
         Match match = Regex.Match(logLine, pattern);
         if (!match.Success)
@@ -194,9 +216,9 @@ public static class LogHelpers
             y = int.Parse(match.Groups[3].Value),
             z = int.Parse(match.Groups[4].Value),
             dimension = match.Groups[5].Value.Trim(),
-            SpawnX = int.TryParse(match.Groups[6].Value, out var sx) ? sx : (int?)null,
-            SpawnY = int.TryParse(match.Groups[7].Value, out var sy) ? sy : (int?)null,
-            SpawnZ = int.TryParse(match.Groups[8].Value, out var sz) ? sz : (int?)null
+            SpawnX = int.TryParse(match.Groups[6].Value, out var sx) ? sx : null,
+            SpawnY = int.TryParse(match.Groups[7].Value, out var sy) ? sy : null,
+            SpawnZ = int.TryParse(match.Groups[8].Value, out var sz) ? sz : null
         };
     }
 }

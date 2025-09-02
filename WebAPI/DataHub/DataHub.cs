@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using BedrockSvrLog.Data;
+using BedrockSvrLog.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.DataHub;
@@ -46,7 +47,7 @@ public class DataHub : Hub
         {
             Id = world?.Id ?? 0,
             Name = world?.Name ?? "Bedrock Level",
-            CurrentTime = world?.CurrentTime ?? "Unknown",
+            CurrentTime = world?.CurrentTime ?? null,
             CurrentDay = world?.CurrentDay ?? 0,
             Seed = world?.Seed ?? "random seed",
             OnlinePlayers = onlinePlayers

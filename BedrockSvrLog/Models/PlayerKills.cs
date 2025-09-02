@@ -11,7 +11,6 @@ public class PlayerKills : PlayerDayTimeLocationSpawnEntity
     [ForeignKey("Xuid")]
     public string Xuid { get; set; } = string.Empty; // Foreign key to User table
     public DateTime KillTime { get; set; }
-    public string Cause { get; set; } = string.Empty;
     public string EntityType { get; set; } = string.Empty;
 
     public PlayerKills()
