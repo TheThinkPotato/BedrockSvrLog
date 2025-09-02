@@ -1,49 +1,71 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using BedrockSvrLog.Model;
+using BedrockSvrLog.Models;
 
-namespace BedrockSvrLog.Data
+namespace BedrockSvrLog.Data;
+
+public class AppDbContext : DbContext
 {
-    public class AppDbContext : DbContext
+    private readonly string? _connectionString;
+
+    public DbSet<User> User => Set<User>();
+    public DbSet<Login> Login => Set<Login>();
+    public DbSet<RealmEvent> RealmEvent => Set<RealmEvent>();
+    public DbSet<World> World => Set<World>();
+
+    public DbSet<PlayerDeaths> PlayerDeaths => Set<PlayerDeaths>();
+    public DbSet<PlayerKills> PlayerKills => Set<PlayerKills>();
+
+    public AppDbContext(string connectionString)
     {
-        private readonly string? _connectionString;
+        _connectionString = connectionString;
+    }
 
-        public DbSet<User> User => Set<User>();
-        public DbSet<Login> Login => Set<Login>();
-        public DbSet<RealmEvent> RealmEvent => Set<RealmEvent>();
-        public DbSet<World> World => Set<World>();
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
+    {
+    }
 
-        public AppDbContext(string connectionString)
+    public AppDbContext()
+    {
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured && !string.IsNullOrWhiteSpace(_connectionString))
         {
-            _connectionString = connectionString;
+            optionsBuilder.UseSqlite(_connectionString);
         }
+    }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Logins)
+            .WithOne(l => l.User)
+            .HasForeignKey(l => l.Xuid);
 
-        public AppDbContext()
-        {
-        }
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.RealmEvents)
+            .WithOne(l => l.User)
+            .HasForeignKey(l => l.Xuid);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured && !string.IsNullOrWhiteSpace(_connectionString))
-            {
-                optionsBuilder.UseSqlite(_connectionString);
-            }
-        }
+        modelBuilder.Entity<PlayerDeaths>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(pd => pd.Xuid)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Logins)
-                .WithOne(l => l.User)
-                .HasForeignKey(l => l.Xuid);
+        modelBuilder.Entity<PlayerDeaths>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(pd => pd.KillerXuid)
+            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.RealmEvents)
-                .WithOne(l => l.User)
-                .HasForeignKey(l => l.Xuid);
-        }
+        modelBuilder.Entity<PlayerKills>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(pk => pk.Xuid)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

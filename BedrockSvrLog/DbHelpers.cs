@@ -1,6 +1,7 @@
 ﻿using BedrockSvrLog.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using BedrockSvrLog.Model;
 
 namespace BedrockSvrLog;
 

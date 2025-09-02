@@ -1,8 +1,7 @@
-﻿using BedrockSvrLog.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BedrockSvrLog.Data
+namespace BedrockSvrLog.Model
 {
     public class RealmEvent
     {
