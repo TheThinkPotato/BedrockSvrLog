@@ -165,27 +165,26 @@ class Program
                             }
 
                         }
+                    }
+                    else if (line != null && line.Contains(RealmLogString))
+                    {
+                        _realmRepo.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
+                    }
+                    else if (line != null && line.Contains(PlayerConnectedString))
+                    {
+                        _userRepo.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
+                        _loginRepo.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                    }
 
-                        else if (line != null && line.Contains(RealmLogString))
-                        {
-                            _realmRepo.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
-                        }
-                        else if (line != null && line.Contains(PlayerConnectedString))
-                        {
-                            _userRepo.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
-                            _loginRepo.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                        }
+                    else if (line != null && line.Contains(PlayerSpawnString))
+                    {
+                        _userRepo.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
+                        _loginRepo.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                    }
 
-                        else if (line != null && line.Contains(PlayerSpawnString))
-                        {
-                            _userRepo.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
-                            _loginRepo.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                        }
-
-                        else if (line != null && line.Contains(PlayerDisconnectedString))
-                        {
-                            _loginRepo.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                        }
+                    else if (line != null && line.Contains(PlayerDisconnectedString))
+                    {
+                        _loginRepo.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
                     }
                 }
             });
