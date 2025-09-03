@@ -32,6 +32,7 @@ class Program
     public static LoginRepository _loginRepo;
     public static RealmRepository _realmRepo;
     public static PlayerKillRepository _playerKillRepo;
+    public static PlayerDeathRepository _playerDeathRepo;
 
     private const string SplashText = $"\t{Title} Version {Version}\n\tBy Daniel Lopez.";
     static async Task Main(string[] args)
@@ -50,6 +51,7 @@ class Program
         var _loginRepo = new LoginRepository(MyAppDbContext);
         var _realmRepo = new RealmRepository(MyAppDbContext);
         var _playerKillRepo = new PlayerKillRepository(MyAppDbContext);
+        var _playerDeathRepo = new PlayerDeathRepository(MyAppDbContext);
 
         //Update missing avatars
         await _userRepo.UpdateMissingUserAvatarLinks(new CancellationToken());
@@ -116,12 +118,15 @@ class Program
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
-                    if (line != null && LogHelpers.ContainsPlayerIgnored(line));
+                    if (line != null && LogHelpers.ContainsPlayerIgnored(line)) ;
                     if (line != null && line.Contains(ApiBridgeScriptString))
                     {
                         var timeAndDaySpawnPoint = LogHelpers.GetTimeAndDayFromString(line);
                         var locationDetails = LogHelpers.GetLocationDataFromString(line);
                         var killDetails = LogHelpers.GetKilledEntity(line);
+                        var playerDeathDetails = LogHelpers.GetPlayerDeath(line);
+
+                        var currentWorldDetails = await _worldRepo.getCurrentWorldDetails(new CancellationToken());
 
                         if (timeAndDaySpawnPoint != null && timeAndDaySpawnPoint.Day != -1)
                         {
@@ -130,40 +135,57 @@ class Program
 
                         if (locationDetails != null)
                         {
+                            // Ensure spawn coordinates are set
+                            if (locationDetails.SpawnX == null || locationDetails.SpawnY == null || locationDetails.SpawnZ == null)
+                            {
+                                locationDetails.SpawnX = currentWorldDetails?.SpawnX;
+                                locationDetails.SpawnY = currentWorldDetails?.SpawnY;
+                                locationDetails.SpawnZ = currentWorldDetails?.SpawnZ;
+                            }
+
                             await _userRepo.UpdateUserLocationAsync(locationDetails, new CancellationToken());
                         }
 
                         if (killDetails != null)
                         {
                             var userDetails = await _userRepo.getCurrentUserDetails(killDetails.PlayerName, new CancellationToken());
-                            var currentWorldDetails = await _worldRepo.getCurrentWorldDetails(new CancellationToken());
 
-                            if(userDetails != null && currentWorldDetails != null)
+                            if (userDetails != null && currentWorldDetails != null)
                             {
                                 await _playerKillRepo.AddKillEventToDbAsync(killDetails, userDetails, currentWorldDetails, new CancellationToken());
                             }
                         }
 
-                    }
-                    else if (line != null && line.Contains(RealmLogString))
-                    {
-                        _realmRepo.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
-                    }
-                    else if (line != null && line.Contains(PlayerConnectedString))
-                    {
-                        _userRepo.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
-                        _loginRepo.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                    }
+                        if (playerDeathDetails != null)
+                        {
+                            var userDetails = await _userRepo.getCurrentUserDetails(playerDeathDetails.PlayerName, new CancellationToken());
+                            if (userDetails != null && currentWorldDetails != null)
+                            {
+                                await _playerDeathRepo.AddPlayerDeathEventToDbAsync(playerDeathDetails, userDetails, currentWorldDetails, new CancellationToken());
+                            }
 
-                    else if (line != null && line.Contains(PlayerSpawnString))
-                    {
-                        _userRepo.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
-                        _loginRepo.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                    }
+                        }
 
-                    else if (line != null && line.Contains(PlayerDisconnectedString))
-                    {
-                        _loginRepo.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        else if (line != null && line.Contains(RealmLogString))
+                        {
+                            _realmRepo.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
+                        }
+                        else if (line != null && line.Contains(PlayerConnectedString))
+                        {
+                            _userRepo.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
+                            _loginRepo.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        }
+
+                        else if (line != null && line.Contains(PlayerSpawnString))
+                        {
+                            _userRepo.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
+                            _loginRepo.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        }
+
+                        else if (line != null && line.Contains(PlayerDisconnectedString))
+                        {
+                            _loginRepo.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        }
                     }
                 }
             });

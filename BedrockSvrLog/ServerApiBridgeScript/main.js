@@ -1,4 +1,4 @@
-﻿﻿// Version: 1.0
+﻿﻿// Version: 1.0a
 import { system, world } from "@minecraft/server";
 
 // Run every 30 seconds (600 ticks, since 20 ticks = 1 second)
@@ -15,7 +15,9 @@ system.runInterval(() => {
     console.log(
       `[TIME] Day: ${dayNumber} Time of Day: ${timeOfDay} World SpawnX: ${Math.floor(
         worldSpawn.x
-      )} SpawnY: ${Math.floor(worldSpawn.y)} SpawnZ: ${Math.floor(worldSpawn.z)}`
+      )} SpawnY: ${Math.floor(worldSpawn.y)} SpawnZ: ${Math.floor(
+        worldSpawn.z
+      )}`
     );
 
     if (players.length === 0) {
@@ -31,18 +33,23 @@ system.runInterval(() => {
         const { x, y, z } = player.location;
 
         // Get player's spawn point
-        const spawnPoint = player.getSpawnPoint();
+        const spawnPoint = player.getSpawnPoint() ?? undefined;
 
         // Get player's dimension (Overworld, Nether, End)
         const dimension = player.dimension.id;
 
-        console.log(
-          `[TRACKING] ${name} is at X:${Math.floor(x)}, Y:${Math.floor(
-            y
-          )}, Z:${Math.floor(z)} in ${dimension}. SpawnPoint SpawnX: ${Math.floor(
-            spawnPoint.x
-          )}, SpawnY: ${Math.floor(spawnPoint.y)}, SpawnZ: ${Math.floor(spawnPoint.z)}`
-        );
+        if (spawnPoint !== undefined) {
+          const spawnX = Math.floor(spawnPoint.x);
+          const spawnY = Math.floor(spawnPoint.y);
+          const spawnZ = Math.floor(spawnPoint.z);
+          console.log(
+            `[TRACKING] ${name} is at X:${Math.floor(x)}, Y:${Math.floor(y)}, Z:${Math.floor(z)} in ${dimension}. SpawnPoint SpawnX: ${spawnX}, SpawnY: ${spawnY}, SpawnZ: ${spawnZ}`
+          );
+        } else {
+          console.log(
+            `[TRACKING] ${name} is at X:${Math.floor(x)}, Y:${Math.floor(y)}, Z:${Math.floor(z)} in ${dimension}.`
+          );
+        }
       } catch (playerError) {
         console.error(`Error tracking player: ${player.name}`, playerError);
       }
@@ -94,15 +101,13 @@ world.afterEvents.entityDie.subscribe((eventData) => {
   // If it's a player that died
   if (deadEntity.typeId === "minecraft:player") {
     console.log(
-      `Script Player Death: ${
-        deadEntity.nameTag
+      `Script Player Death: ${deadEntity.nameTag
       } at: ${getLocation()} by: ${getKiller()}`
     );
   } else {
     // If it’s an animal (or any mob)
     console.log(
-      `Script Entity Death: ${
-        deadEntity.typeId
+      `Script Entity Death: ${deadEntity.typeId
       } at: ${getLocation()} by: ${getKiller()}`
     );
   }
