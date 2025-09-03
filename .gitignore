@@ -373,3 +373,4 @@ WebAPI/app.db-shm
 WebAPI/app.db-wal
 /WebAPI/wwwroot/map
 BedrockSvrLog/app.db
+*.db

@@ -1,6 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using BedrockSvrLog.Repositories;
+using System.Text.RegularExpressions;
 
-namespace BedrockSvrLog;
+namespace BedrockSvrLog.Helpers;
 
 public static class LogHelpers
 {
@@ -158,7 +159,7 @@ public static class LogHelpers
             return new WorldTimeDaySpawnPoint
             {
                 Day = int.Parse(match.Groups[1].Value),
-                Time = match.Groups[2].Value,
+                Time = int.Parse(match.Groups[2].Value),
                 SpawnX = int.Parse(match.Groups[3].Value),
                 SpawnY = int.Parse(match.Groups[4].Value),
                 SpawnZ = int.Parse(match.Groups[5].Value)
@@ -168,35 +169,102 @@ public static class LogHelpers
         return new WorldTimeDaySpawnPoint
         {
             Day = -1,
-            Time = "",
+            Time = null,
             SpawnX = null,
             SpawnY = null,
             SpawnZ = null
         };
     }
 
-    public static EntityLocation? GetLocationDataFromString(string logLine)
+    public static EntityDeath? GetKilledEntity(string logLine)
     {
-        //NO LOG FILE! - [2025 - 08 - 24 15:25:34:604 INFO][Scripting][TRACKING] MrPlayerName is at X:0, Y: 77, Z: -23 in minecraft: overworld
-        // Example input: NO LOG FILE! - [2025-08-30 20:50:48:557 INFO] [Scripting] [TRACKING] TheStinkPotatoe is at X:241, Y:83, Z:396 in minecraft:overworld. SpawnPoint SpawnX: 236, SpawnY: 86, SpawnZ: 398
+        // Exmaple [2025-09-02 18:15:26:611 INFO] [Scripting] Script Entity Death: minecraft:wandering_trader at: 266, 75, 399 in minecraft:overworld by: player - ThePlayerMan
+        string pattern = @"Script Entity Death:\s+(\S+)\s+at:\s*(-?\d+),\s*(-?\d+),\s*(-?\d+)\s+in\s+(\S+)\s+by:\s+player\s*-\s*(\S+)";
 
-        string pattern = @"\[TRACKING\]\s+(.+?)\s+is at X:\s*(-?\d+),\s*Y:\s*(-?\d+),\s*Z:\s*(-?\d+)\s+in\s+minecraft:([^\.\s]+)\.\s*SpawnPoint\s*SpawnX:\s*(-?\d+),\s*SpawnY:\s*(-?\d+),\s*SpawnZ:\s*(-?\d+)";
+        const string FilterString = "minecraft:";
+
         Match match = Regex.Match(logLine, pattern);
         if (!match.Success)
         {
-            FileHelpers.writeToDebugFile($"Error: Unable to extract location data from log line: {logLine}");
             return null;
         }
-        return new EntityLocation
+        return new EntityDeath
         {
-            EntityName = match.Groups[1].Value.Trim(),
-            x = int.Parse(match.Groups[2].Value),
-            y = int.Parse(match.Groups[3].Value),
-            z = int.Parse(match.Groups[4].Value),
-            dimension = match.Groups[5].Value.Trim(),
-            SpawnX = int.TryParse(match.Groups[6].Value, out var sx) ? sx : (int?)null,
-            SpawnY = int.TryParse(match.Groups[7].Value, out var sy) ? sy : (int?)null,
-            SpawnZ = int.TryParse(match.Groups[8].Value, out var sz) ? sz : (int?)null
+            EntityType = match.Groups[1].Value.Replace(FilterString, "").Trim(),
+            PositionX = int.Parse(match.Groups[2].Value),
+            PositionY = int.Parse(match.Groups[3].Value),
+            PositionZ = int.Parse(match.Groups[4].Value),
+            Dimension = match.Groups[5].Value.Replace(FilterString, "").Trim(),
+            PlayerName = match.Groups[6].Value.Trim(),
+            Cause = null
         };
+    }
+
+
+    public static EntityDeath? GetPlayerDeath(string logLine)
+    {
+        //Exmaple: NO LOG FILE! - [2025-09-03 09:55:55:118 INFO] [Scripting] Script Player Death: MrPlayerMan at: -290, 72, 6 in minecraft:overworld by: fall
+        string pattern = @"Player Death:\s+(?<player>.+?)\s+at:\s+(?<x>-?\d+),\s*(?<y>-?\d+),\s*(?<z>-?\d+)\s+in\s+(?<dimension>\S+)\s+by:\s+(?<cause>\S+)";
+
+        Match match = Regex.Match(logLine, pattern);
+
+        if (!match.Success)
+        {
+            return null;
+        }
+
+        return new EntityDeath
+        {
+            PlayerName = match.Groups["player"].Value.Trim(),
+            PositionX = int.Parse(match.Groups["x"].Value),
+            PositionY = int.Parse(match.Groups["y"].Value),
+            PositionZ = int.Parse(match.Groups["z"].Value),
+            Dimension = match.Groups["dimension"].Value.Replace("minecraft:", "").Trim(),
+            Cause = match.Groups["cause"].Value.Replace("minecraft:", "").Trim()
+        };
+    }
+
+    public static EntityLocation? GetLocationDataFromString(string logLine)
+    {
+        // Try to match with spawn point info
+        string patternWithSpawn = @"\[TRACKING\]\s+(?<player>.+?)\s+is at X:\s*(?<x>-?\d+),\s*Y:\s*(?<y>-?\d+),\s*Z:\s*(?<z>-?\d+)\s+in\s+minecraft:(?<dimension>[^\.\s]+)\.\s*SpawnPoint\s*SpawnX:\s*(?<spawnx>-?\d+),\s*SpawnY:\s*(?<spawny>-?\d+),\s*SpawnZ:\s*(?<spawnz>-?\d+)";
+        var match = Regex.Match(logLine, patternWithSpawn, RegexOptions.IgnoreCase);
+
+        if (match.Success)
+        {
+            return new EntityLocation
+            {
+                EntityName = match.Groups["player"].Value.Trim(),
+                x = int.Parse(match.Groups["x"].Value),
+                y = int.Parse(match.Groups["y"].Value),
+                z = int.Parse(match.Groups["z"].Value),
+                dimension = match.Groups["dimension"].Value.Trim(),
+                SpawnX = int.TryParse(match.Groups["spawnx"].Value, out var sx) ? sx : null,
+                SpawnY = int.TryParse(match.Groups["spawny"].Value, out var sy) ? sy : null,
+                SpawnZ = int.TryParse(match.Groups["spawnz"].Value, out var sz) ? sz : null
+            };
+        }
+
+        // Try to match without spawn point info
+        string patternNoSpawn = @"\[TRACKING\]\s+(?<player>.+?)\s+is at X:\s*(?<x>-?\d+),\s*Y:\s*(?<y>-?\d+),\s*Z:\s*(?<z>-?\d+)\s+in\s+minecraft:(?<dimension>\w+)";
+        match = Regex.Match(logLine, patternNoSpawn, RegexOptions.IgnoreCase);
+
+        if (match.Success)
+        {
+            return new EntityLocation
+            {
+                EntityName = match.Groups["player"].Value.Trim(),
+                x = int.Parse(match.Groups["x"].Value),
+                y = int.Parse(match.Groups["y"].Value),
+                z = int.Parse(match.Groups["z"].Value),
+                dimension = match.Groups["dimension"].Value.Trim(),
+                SpawnX = null,
+                SpawnY = null,
+                SpawnZ = null
+            };
+        }
+
+        // If no match, return null
+        return null;
     }
 }

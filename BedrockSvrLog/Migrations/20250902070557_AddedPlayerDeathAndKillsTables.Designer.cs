@@ -3,6 +3,7 @@ using System;
 using BedrockSvrLog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BedrockSvrLog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250902070557_AddedPlayerDeathAndKillsTables")]
+    partial class AddedPlayerDeathAndKillsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
@@ -62,13 +65,13 @@ namespace BedrockSvrLog.Migrations
                     b.Property<DateTime>("DeathTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Dimension")
+                    b.Property<string>("Demension")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("GameDay")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("GameTime")
+                    b.Property<int>("GameTime")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("KillerXuid")
@@ -179,8 +182,9 @@ namespace BedrockSvrLog.Migrations
                     b.Property<int>("CurrentDay")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CurrentTime")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CurrentTime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -210,7 +214,11 @@ namespace BedrockSvrLog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Dimension")
+                    b.Property<string>("Cause")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Demension")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EntityType")
@@ -220,7 +228,7 @@ namespace BedrockSvrLog.Migrations
                     b.Property<int>("GameDay")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("GameTime")
+                    b.Property<int>("GameTime")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("KillTime")

@@ -1,4 +1,7 @@
 ﻿using BedrockSvrLog.Data;
+using BedrockSvrLog.Helpers;
+using BedrockSvrLog.Models;
+using BedrockSvrLog.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -6,10 +9,11 @@ namespace BedrockSvrLog;
 
 class Program
 {
-    public const string Version = "0.2g";
+    public const string Version = "0.2i";
     public const string Title = "Bedrock Server Log Tool Wrapper";
 
     public static string bedrockServerFolderLocation = @"..\";
+    public static string dbSource = "Data Source=app.db";
 
     public const string LogFolder = "logs";
     public const string ServerLogFile = "server.log";
@@ -22,25 +26,35 @@ class Program
     public const string ApiBridgeScriptString = "[Scripting]";
 
     protected static AppDbContext MyAppDbContext;
-    public static DbHelpers dbHelpers;
+
+    public static WorldRepository _worldRepo;
+    public static UserRepository _userRepo;
+    public static LoginRepository _loginRepo;
+    public static RealmRepository _realmRepo;
+    public static PlayerKillRepository _playerKillRepo;
+    public static PlayerDeathRepository _playerDeathRepo;
 
     private const string SplashText = $"\t{Title} Version {Version}\n\tBy Daniel Lopez.";
     static async Task Main(string[] args)
     {
-
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlite("Data Source=app.db");
+        optionsBuilder.UseSqlite(dbSource);
         MyAppDbContext = new AppDbContext(optionsBuilder.Options);
 
         MyAppDbContext.Database.EnsureCreated();
-        dbHelpers = new DbHelpers(MyAppDbContext);
 
         // Calcualte the acutual folder on the drive
         bedrockServerFolderLocation = Path.GetFullPath(bedrockServerFolderLocation);
 
+        var _worldRepo = new WorldRepository(MyAppDbContext);
+        var _userRepo = new UserRepository(MyAppDbContext);
+        var _loginRepo = new LoginRepository(MyAppDbContext);
+        var _realmRepo = new RealmRepository(MyAppDbContext);
+        var _playerKillRepo = new PlayerKillRepository(MyAppDbContext);
+        var _playerDeathRepo = new PlayerDeathRepository(MyAppDbContext);
 
         //Update missing avatars
-        await dbHelpers.UpdateMissingUserAvatarLinks(new CancellationToken());
+        await _userRepo.UpdateMissingUserAvatarLinks(new CancellationToken());
 
         underlinedText(SplashText, '=', 1);
 
@@ -50,7 +64,6 @@ class Program
 
         try
         {
-
             var worldName = FileHelpers.GetWorldNameFromConfig(bedrockServerFolderLocation);
             var worldSeed = FileHelpers.GetWorldSeedFromConfig(bedrockServerFolderLocation);
 
@@ -59,13 +72,13 @@ class Program
             if (!string.IsNullOrEmpty(worldName))
             {
                 Console.WriteLine($"World Name: {worldName}");
-                dbHelpers.UpdateWorldName(worldName);
+                _worldRepo.UpdateWorldName(worldName);
             }
 
             if (!string.IsNullOrEmpty(worldSeed))
             {
                 Console.WriteLine($"World Seed: {worldSeed}\n");
-                dbHelpers.UpdateWorldSeed(worldSeed);
+                _worldRepo.UpdateWorldSeed(worldSeed);
             }
 
             underline(SplashText.Length, '=', 0, 2);
@@ -93,9 +106,6 @@ class Program
             }
             psi.FileName = exeFullPath;
 
-
-
-
             using var process = new Process { StartInfo = psi };
             process.Start();
 
@@ -108,41 +118,74 @@ class Program
                     Console.WriteLine(line);
                     await File.AppendAllTextAsync($"{LogFolder}\\{ServerLogFile}", line + Environment.NewLine);
 
-                    if (line != null && LogHelpers.ContainsPlayerIgnored(line));
+                    if (line != null && LogHelpers.ContainsPlayerIgnored(line)) ;
                     if (line != null && line.Contains(ApiBridgeScriptString))
                     {
                         var timeAndDaySpawnPoint = LogHelpers.GetTimeAndDayFromString(line);
                         var locationDetails = LogHelpers.GetLocationDataFromString(line);
+                        var killDetails = LogHelpers.GetKilledEntity(line);
+                        var playerDeathDetails = LogHelpers.GetPlayerDeath(line);
+
+                        var currentWorldDetails = await _worldRepo.getCurrentWorldDetails(new CancellationToken());
 
                         if (timeAndDaySpawnPoint != null && timeAndDaySpawnPoint.Day != -1)
                         {
-                            await dbHelpers.UpdateWorldTableData(timeAndDaySpawnPoint, new CancellationToken());
+                            await _worldRepo.UpdateWorldTableData(timeAndDaySpawnPoint, new CancellationToken());
                         }
 
                         if (locationDetails != null)
                         {
-                            await dbHelpers.UpdateUserLocationAsync(locationDetails, new CancellationToken());
+                            // Ensure spawn coordinates are set
+                            if (locationDetails.SpawnX == null || locationDetails.SpawnY == null || locationDetails.SpawnZ == null)
+                            {
+                                locationDetails.SpawnX = currentWorldDetails?.SpawnX;
+                                locationDetails.SpawnY = currentWorldDetails?.SpawnY;
+                                locationDetails.SpawnZ = currentWorldDetails?.SpawnZ;
+                            }
+
+                            await _userRepo.UpdateUserLocationAsync(locationDetails, new CancellationToken());
                         }
-                    }
-                    else if (line != null && line.Contains(RealmLogString))
-                    {
-                        dbHelpers.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
-                    }
-                    else if (line != null && line.Contains(PlayerConnectedString))
-                    {
-                        dbHelpers.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
-                        dbHelpers.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                    }
 
-                    else if (line != null && line.Contains(PlayerSpawnString))
-                    {
-                        dbHelpers.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
-                        dbHelpers.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
-                    }
+                        if (killDetails != null)
+                        {
+                            var userDetails = await _userRepo.getCurrentUserDetails(killDetails.PlayerName, new CancellationToken());
 
-                    else if (line != null && line.Contains(PlayerDisconnectedString))
-                    {
-                        dbHelpers.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                            if (userDetails != null && currentWorldDetails != null)
+                            {
+                                await _playerKillRepo.AddKillEventToDbAsync(killDetails, userDetails, currentWorldDetails, new CancellationToken());
+                            }
+                        }
+
+                        if (playerDeathDetails != null)
+                        {
+                            var userDetails = await _userRepo.getCurrentUserDetails(playerDeathDetails.PlayerName, new CancellationToken());
+                            if (userDetails != null && currentWorldDetails != null)
+                            {
+                                await _playerDeathRepo.AddPlayerDeathEventToDbAsync(playerDeathDetails, userDetails, currentWorldDetails, new CancellationToken());
+                            }
+
+                        }
+
+                        else if (line != null && line.Contains(RealmLogString))
+                        {
+                            _realmRepo.addRealmEventToDb(LogHelpers.getDateTimeFromLogLine(line), LogHelpers.GetRealmStoryDataFromLogLine(line));
+                        }
+                        else if (line != null && line.Contains(PlayerConnectedString))
+                        {
+                            _userRepo.addUserToDb(LogHelpers.GetPlayerNameFromLogLine(line), LogHelpers.GetXuidFromLogLine(line), null);
+                            _loginRepo.addUserLoginToDb(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        }
+
+                        else if (line != null && line.Contains(PlayerSpawnString))
+                        {
+                            _userRepo.updateuserPfid(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getPfidFromLogLine(line));
+                            _loginRepo.updateUserLoginSpawnTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        }
+
+                        else if (line != null && line.Contains(PlayerDisconnectedString))
+                        {
+                            _loginRepo.updateUserLoginLogoutTime(LogHelpers.GetXuidFromLogLine(line), LogHelpers.getDateTimeFromLogLine(line));
+                        }
                     }
                 }
             });

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BedrockSvrLog.Data;
+namespace BedrockSvrLog.Model;
 public class User
 {
     public string Name { get; set; } = string.Empty;
