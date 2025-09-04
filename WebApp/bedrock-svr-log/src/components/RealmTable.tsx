@@ -5,7 +5,7 @@ import { formatDateTime } from "../Helpers/timeHelper";
 import { splitCamelCase } from "../Helpers/textHelper";
 import type { UserRealmEvent } from "../Hooks/useGetUserRealmEvetns";
 import type { RealmEvent } from "../Hooks/useGetRealmEvents";
-import UserModal from "./UserModal";
+import UserModal from "./UserModal/UserModal";
 import { useGetDurations, type Duration } from "../Hooks/useGetDurations";
 
 interface RealmTableProps {
@@ -15,6 +15,7 @@ interface RealmTableProps {
   showUsername?: boolean;
   showHeader?: boolean;
   RealmModal?: RealmModalProps;
+  isInUserModal?: boolean;
 }
 
 interface RealmModalProps {
@@ -31,6 +32,7 @@ const RealmTable = ({
   showAvatar = true,
   showUsername = true,
   showHeader = true,
+  isInUserModal = false,
   RealmModal,
 }: RealmTableProps) => {
   const hasModal = !!RealmModal?.open && !!RealmModal?.selectedUser;
@@ -64,6 +66,7 @@ const RealmTable = ({
             stripedRows
             size="small"
             loading={isLoading}
+            {...(isInUserModal && { scrollable: true, scrollHeight: "170px" })}
           >
             {showAvatar && (
               <Column
@@ -105,6 +108,7 @@ const RealmTable = ({
               field="realmEvent"
               header="Event"
               className="text-white"
+              {...(isInUserModal && { headerStyle: { width: "220px" } })}
               body={(item) => (
                 <Typography>{splitCamelCase(item.realmEvent)}</Typography>
               )}

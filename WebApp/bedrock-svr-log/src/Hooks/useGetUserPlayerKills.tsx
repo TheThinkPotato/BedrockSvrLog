@@ -9,10 +9,10 @@ export type UserPlayerKills = {
   favouriteKillEntity: string;
   favouriteKillCount: number;
 
-  playerKillList: PlayerKillList[];
+  playerKillsList: PlayerKillsList[];
 };
 
-type PlayerKillList = {
+export type PlayerKillsList = {
   entityType: string;
   killCount: number;
 };

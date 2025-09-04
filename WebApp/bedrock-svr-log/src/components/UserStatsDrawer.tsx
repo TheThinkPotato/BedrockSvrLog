@@ -10,7 +10,7 @@ import {
 } from "../Helpers/timeHelper";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import UserModal from "./UserModal";
+import UserModal from "./UserModal/UserModal";
 
 const UserStatsDrawer = ({
   open,

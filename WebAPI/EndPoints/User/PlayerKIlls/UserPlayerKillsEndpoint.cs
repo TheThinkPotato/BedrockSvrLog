@@ -44,7 +44,9 @@ public class UserPlayerKillsEndpoint : EndpointWithoutRequest<UserPlayerKillsRes
                     {
                         EntityType = eg.Key,
                         KillCount = eg.Count()
-                    }).ToList();
+                    })
+                    .OrderBy(ek => ek.EntityType)
+                    .ToList();
 
             response = response = new UserPlayerKillsResponse
                                             {
