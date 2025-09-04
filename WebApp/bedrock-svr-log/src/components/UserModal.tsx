@@ -35,6 +35,17 @@ const UserModal = ({
     modalOpen
   );
 
+  const handlePlayerClass = (entity: UserPlayerKills | undefined) => {
+    if (!entity || entity?.favouriteKillCount === 0) return "Human";
+    if (entity?.favouriteKillCount) {
+      return `${
+        entity?.favouriteKillEntity?.charAt(0).toUpperCase() +
+        entity?.favouriteKillEntity?.slice(1).replace("_", " ")
+      } slayer`;
+    }
+    return "Human";
+  };
+
   const handleFavoriteKillEntity = (entity: UserPlayerKills | undefined) => {
     if (!entity) return "None";
     if (entity?.favouriteKillCount && entity?.favouriteKillCount > 0) {
@@ -67,7 +78,11 @@ const UserModal = ({
           }}
         >
           <Box className="flex justify-between items-center mb-4">
-            <Typography variant="h6" className="text-white" sx={{ marginLeft: "0.8rem" }}>
+            <Typography
+              variant="h6"
+              className="text-white"
+              sx={{ marginLeft: "0.8rem" }}
+            >
               User Details
             </Typography>
             <IconButton
@@ -108,7 +123,7 @@ const UserModal = ({
                       marginBottom: "0.5rem",
                     }}
                   />
-                  <Typography className="flex flex-col items-center justify-center">
+                  <Box className="flex flex-col items-center justify-center">
                     <Typography
                       variant="body2"
                       className="text-gray-300"
@@ -118,16 +133,7 @@ const UserModal = ({
                         textAlign: "center",
                       }}
                     >
-                      {userPlayerKills?.favouriteKillEntity
-                        ? `${
-                            userPlayerKills?.favouriteKillEntity
-                              .charAt(0)
-                              .toUpperCase() +
-                            userPlayerKills?.favouriteKillEntity
-                              .slice(1)
-                              .replace("_", " ")
-                          } slayer`
-                        : "Human"}
+                      {handlePlayerClass(userPlayerKills)}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -143,7 +149,7 @@ const UserModal = ({
                         <Close sx={{ color: "#ef4444", fontSize: "1.2rem" }} />
                       )}
                     </Typography>
-                  </Typography>
+                  </Box>
                 </Box>
               </Box>
               <Box

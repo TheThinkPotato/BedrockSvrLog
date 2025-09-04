@@ -31,7 +31,7 @@ public class UserPlayerKillsEndpoint : EndpointWithoutRequest<UserPlayerKillsRes
 
         UserPlayerKillsResponse response;
 
-        if (userPlayerKills == null)
+        if (userPlayerKills == null || userPlayerKills.Count == 0)
         {
             response = response = new UserPlayerKillsResponse();
         }
