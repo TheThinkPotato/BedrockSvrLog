@@ -1,12 +1,11 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { formatDateTime } from "../Helpers/timeHelper";
-import { splitCamelCase } from "../Helpers/textHelper";
-import type { UserRealmEvent } from "../Hooks/useGetUserRealmEvetns";
-import type { RealmEvent } from "../Hooks/useGetRealmEvents";
-import UserModal from "./UserModal/UserModal";
-import { useGetDurations, type Duration } from "../Hooks/useGetDurations";
+import { formatDateTime } from "../../Helpers/timeHelper";
+import { splitCamelCase } from "../../Helpers/textHelper";
+import type { UserRealmEvent } from "../../Hooks/useGetUserRealmEvents";
+import type { RealmEvent } from "../../Hooks/useGetRealmEvents";
+import UserModal from "../UserModal/UserModal";
 
 interface RealmTableProps {
   data: RealmEvent[] | UserRealmEvent[];
@@ -21,9 +20,9 @@ interface RealmTableProps {
 interface RealmModalProps {
   open: boolean;
   onClose: () => void;
-  setSelectedUser: (user: Duration) => void;
+  setSelectedUser: (user: number) => void;
   setModalOpen: (open: boolean) => void;
-  selectedUser: Duration | null;
+  selectedUserXuid: number;
 }
 
 const RealmTable = ({
@@ -35,18 +34,7 @@ const RealmTable = ({
   isInUserModal = false,
   RealmModal,
 }: RealmTableProps) => {
-  const hasModal = !!RealmModal?.open && !!RealmModal?.selectedUser;
-
-  const { data: userDurations, isLoading: userDurationsLoading } = useGetDurations(hasModal);
-
-  const getUserDurationData = (user: number): Duration | null => {
-    const userDuration = userDurations?.durations.find((duration) => duration.xuid === user);
-    if (userDuration) {
-      return userDuration;
-    }
-    return null;
-  };
-
+  const hasModal = !!RealmModal?.open && !!RealmModal?.selectedUserXuid;
 
   return (
     <>
@@ -84,7 +72,7 @@ const RealmTable = ({
                 body={(item) => (
                   <Box
                     onClick={() =>
-                      RealmModal?.setSelectedUser(item as Duration)
+                      RealmModal?.setSelectedUser(item.xuid)
                     }
                     style={{
                       cursor: "pointer",
@@ -124,9 +112,9 @@ const RealmTable = ({
           </DataTable>
         </Box>
       </Box>
-      {hasModal && !userDurationsLoading && (
+      {hasModal && (
       <UserModal
-        selectedUser={getUserDurationData(RealmModal?.selectedUser?.xuid ?? 0) ?? null}
+        selectedUserXuid={RealmModal?.selectedUserXuid ?? NaN}
           handleModalClose={RealmModal?.onClose}
           modalOpen={RealmModal?.open}
         />

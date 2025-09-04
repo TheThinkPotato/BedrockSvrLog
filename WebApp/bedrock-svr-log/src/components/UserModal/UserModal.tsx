@@ -1,28 +1,27 @@
 import { Modal, Box, Typography, IconButton, Fade } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { type Duration } from "../../Hooks/useGetDurations";
-import { useGetUserRealmEvents } from "../../Hooks/useGetUserRealmEvetns";
+import { useGetUserRealmEvents } from "../../Hooks/useGetUserRealmEvents";
 import { useGetUserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
 import UserModalDetails from "./UserModalDetails";
 import UserPlayerDetails from "./UserPlayerDetails";
-import PlayerKillsTable from "./PlayerKillsTable";
+import PlayerKillsTable from "../Tables/PlayerKillsTable";
 
 interface UserModalProps {
-  selectedUser: Duration | null;
+  selectedUserXuid: number ;
   handleModalClose: () => void;
   modalOpen: boolean;
 }
 
 const UserModal = ({
-  selectedUser,
+  selectedUserXuid,
   handleModalClose,
   modalOpen,
 }: UserModalProps) => {
   const { data: userRealmEvents, isLoading: userRealmEventsLoading } =
-    useGetUserRealmEvents(selectedUser?.xuid ?? 0, modalOpen);
+    useGetUserRealmEvents(selectedUserXuid, modalOpen);
 
   const { data: userPlayerKills, isLoading: userPlayerKillsLoading } = useGetUserPlayerKills(
-    selectedUser?.xuid ?? 0,
+    selectedUserXuid,
     modalOpen
   );
 
@@ -61,7 +60,7 @@ const UserModal = ({
             </IconButton>
           </Box>
 
-          {selectedUser && (
+          {selectedUserXuid && (
             <Box className="text-center flex flex-row">
               <Box
                 sx={{
@@ -73,13 +72,13 @@ const UserModal = ({
                 }}
               >
                 <UserPlayerDetails
-                  selectedUser={selectedUser}
+                  selectedUserXuid={selectedUserXuid}
                   userPlayerKills={userPlayerKills ?? null}
                 />
               </Box>
               <Box className="flex flex-col" sx={{ width: "80%" }}>
                 <UserModalDetails
-                  selectedUser={selectedUser}
+                  selectedUserXuid={selectedUserXuid}
                   userPlayerKills={userPlayerKills ?? null}
                   userRealmEvents={userRealmEvents ?? null}
                   userRealmEventsLoading={userRealmEventsLoading}

@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 
 import type { UserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
 import { Typography } from "@mui/material";
-import KillTable from "../KillTable";
+import KillTable from "./KillTable";
 
 interface PlayerKillsTableProps {
   userPlayerKills: UserPlayerKills | null;

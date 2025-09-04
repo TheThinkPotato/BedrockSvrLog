@@ -8,9 +8,9 @@ type MinecraftWorldInfo = {
 };
 
 type SkyColor = {
-    color1: string;
-    color2: string;
-  };
+  color1: string;
+  color2: string;
+};
 
 type AmPmTime = {
   hours: string;
@@ -20,7 +20,14 @@ type AmPmTime = {
 };
 
 export const formatTimeCount = (time: string) => {
+
+  if (time === undefined || time === null || time == "0") {
+    return "Unknown";
+  }
+
   const workingTime = time.toString().split(":");
+
+  //Check if the time is in the format of 01:32:09.9530000
   if (workingTime[0].includes(".")) {
     const days = workingTime[0].split(".")[0];
     const hours = workingTime[0].split(".")[1];
@@ -28,7 +35,6 @@ export const formatTimeCount = (time: string) => {
     const seconds = workingTime[2].slice(0, 2);
     return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
   }
-
   return (
     workingTime[0] +
     "h " +
@@ -40,6 +46,10 @@ export const formatTimeCount = (time: string) => {
 };
 
 export const formatTime = (input: string) => {
+
+  if(input === undefined || input === null || input === "0") {
+    return "Unknown";
+  }
   const [hourStr, minuteStr, secondStr] = input.split(":");
   let hours = parseInt(hourStr, 10);
   const minutes = minuteStr.padStart(2, "0");
@@ -74,7 +84,7 @@ export const getTimeDifferenceTimeDateFull = (
   const hours = Math.floor(timeDiff / (1000 * 60 * 60));
   const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-  
+
   return `${hours}h ${minutes}m ${seconds}s`;
 };
 
@@ -122,7 +132,7 @@ export const minecraftTicksToTimeObject = (ticks: number): AmPmTime => {
 
   const formattedMinutes = minutes.toString().padStart(2, "0");
   const formattedHours = hours.toString();
-   
+
   return {
     hours: formattedHours,
     minutes: formattedMinutes,
@@ -149,7 +159,6 @@ Minecraft real time to ticks:
 1:00 PM → 7,000 ticks           "10:00 PM" → 16000,              
 2:00 PM → 8,000 ticks           "11:00 PM" → 17000,
 */
-
 
 const dayNightSkyColor = (ticks: number): SkyColor => {
   // Normalize ticks to always stay within 0 → 23999

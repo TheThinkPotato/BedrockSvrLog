@@ -14,7 +14,7 @@ export type WorldData = {
 
 export type OnlinePlayers = {
   Name: string;
-  Xuid: string;
+  Xuid: number;
   Pfid: string;
   AvatarLink: string;
   LocationX: number;
