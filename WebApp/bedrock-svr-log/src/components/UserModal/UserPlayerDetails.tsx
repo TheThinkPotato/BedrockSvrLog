@@ -14,7 +14,7 @@ const UserPlayerDetails = ({ selectedUserXuid, userPlayerKills }: UserPlayerDeta
 
     const handlePlayerClass = (entity: UserPlayerKills | undefined) => {
         if (!entity || entity?.favouriteKillCount === 0) return "Human";
-        if (entity?.favouriteKillCount) {
+        if (entity?.favouriteKillCount > 20) {
           return `${
             entity?.favouriteKillEntity?.charAt(0).toUpperCase() +
             entity?.favouriteKillEntity?.slice(1).replace("_", " ")

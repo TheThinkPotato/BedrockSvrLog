@@ -40,7 +40,7 @@ const KillTable = ({ data, isLoading, showHeader = true }: KillTableProps) => {
               className="text-white"
               headerStyle={{ width: "220px" }}
               body={(item) => (
-                <Typography>{splitCamelCase(item.entityType)}</Typography>
+                <Typography>{splitCamelCase(item.entityType.replace("_", " "))}</Typography>
               )}
             />
             <Column
