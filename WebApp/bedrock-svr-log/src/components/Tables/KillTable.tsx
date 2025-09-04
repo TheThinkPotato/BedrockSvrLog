@@ -3,6 +3,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { splitCamelCase } from "../../Helpers/textHelper";
 import type { PlayerKillsList } from "../../Hooks/useGetUserPlayerKills";
+import { creatureNameCleanUp } from "../../Helpers/creatureHelper";
 
 interface KillTableProps {
   data: PlayerKillsList[];
@@ -40,7 +41,7 @@ const KillTable = ({ data, isLoading, showHeader = true }: KillTableProps) => {
               className="text-white"
               headerStyle={{ width: "220px" }}
               body={(item) => (
-                <Typography>{splitCamelCase(item.entityType.replace("_", " "))}</Typography>
+                <Typography>{splitCamelCase(creatureNameCleanUp(item.entityType))}</Typography>
               )}
             />
             <Column

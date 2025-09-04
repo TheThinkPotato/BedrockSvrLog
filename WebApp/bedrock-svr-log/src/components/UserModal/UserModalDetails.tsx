@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
-// import { formatTimeCount } from "../../Helpers/timeHelper";
 import { formatDateTime, formatTimeCount } from "../../Helpers/timeHelper";
 import { type UserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
 import { type UserRealmEvent } from "../../Hooks/useGetUserRealmEvents";
 import RealmTable from "../Tables/RealmTable";
 import { useGetUserDurations } from "../../Hooks/useGetUserDurations";
+import { creatureNameCleanUp } from "../../Helpers/creatureHelper";
 
 interface UserDetailsProps {
   selectedUserXuid: number;
@@ -23,8 +23,7 @@ const UserModalDetails = ({
     if (!entity) return "None";
     if (entity?.favouriteKillCount && entity?.favouriteKillCount > 0) {
       return `${
-        entity?.favouriteKillEntity?.charAt(0).toUpperCase() +
-          entity?.favouriteKillEntity?.slice(1).replace("_", " ") || "None"
+        creatureNameCleanUp(entity?.favouriteKillEntity ?? "") || "None"
       } with ${entity?.favouriteKillCount} kills.`;
     }
     return "None";
