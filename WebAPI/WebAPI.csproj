@@ -22,8 +22,4 @@
     <ProjectReference Include="..\BedrockSvrLog\BedrockSvrLog.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EndPoints\PlayerKills\" />
-  </ItemGroup>
-
 </Project>

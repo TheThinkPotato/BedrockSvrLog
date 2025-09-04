@@ -21,10 +21,13 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var durations = _db.User
+        // Move to client side
+        var durations = await _db.User
             .Join(_db.Login, u => u.Xuid, l => l.Xuid, (u, l) => new { u, l })
-            .AsEnumerable() // Move to client-side evaluation
             .GroupBy(x => new { x.u.Name, x.u.Xuid, x.u.Pfid, x.u.AvatarLink })
+            .ToListAsync(ct);
+            
+            var response = durations
             .Select(g => new DurationDTO
             {
                 Name = g.Key.Name,
@@ -47,7 +50,7 @@ public class DurationsEndpoint : EndpointWithoutRequest<DurationsResponse>
             .OrderByDescending(x => x.TotalLiveDuration)
             .ToList();
 
-        await Send.OkAsync(new DurationsResponse { Durations = durations }, ct);
+        await Send.OkAsync(new DurationsResponse { Durations = response }, ct);
     }
 }
 

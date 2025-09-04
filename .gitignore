@@ -375,3 +375,4 @@ WebAPI/app.db-wal
 BedrockSvrLog/app.db
 *.db
 BedrockSvrLog/app.db
+BedrockSvrLog/app.db

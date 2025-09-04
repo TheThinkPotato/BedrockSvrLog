@@ -55,12 +55,6 @@ class Startup
 
         bld.Services.AddCors(options =>
         {
-            //options.AddPolicy("AllowAll", builder =>
-            //{
-            //    builder.AllowAnyOrigin()
-            //           .AllowAnyMethod()
-            //           .AllowAnyHeader();
-            //});
             options.AddPolicy("AllowReactApp", builder =>
             {
                 builder
@@ -92,12 +86,9 @@ class Startup
            .SwaggerDocument();
 
         bld.Services.AddSignalR();
-        bld.Services.AddHostedService<WebAPI.DataHub.MessageScheduler>();
+        //bld.Services.AddHostedService<WebAPI.DataHub.MessageScheduler>();
 
         var app = bld.Build();
-
-        //app.UseCors("AllowReactApp")
-        //    .UseCors("AllowLocalHostDev");
 
         app.UseDefaultFiles()
            .UseStaticFiles();
