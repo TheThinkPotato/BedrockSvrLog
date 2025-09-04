@@ -11,6 +11,7 @@ public class PlayerKills
     public string Name { get; init; } = string.Empty;
     public int TotalKills { get; init; } = 0;
     public string FavouriteKillEntity => PlayerKillsList.OrderByDescending(pk => pk.KillCount).FirstOrDefault()?.EntityType ?? "None";
+    public int FavouriteKillCount => PlayerKillsList.OrderByDescending(pk => pk.KillCount).FirstOrDefault()?.KillCount ?? 0;
 
     public List<PlayerKillList> PlayerKillsList { get; init; } = [];
 

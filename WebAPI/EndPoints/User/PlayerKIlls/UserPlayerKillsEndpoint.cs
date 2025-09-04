@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.EndPoints.User.PlayerKIlls;
 
-public class UserPlayerKillsEndpoint : EndpointWithoutRequest<PlayerKillsResponse>
+public class UserPlayerKillsEndpoint : EndpointWithoutRequest<UserPlayerKillsResponse>
 {
     private readonly AppDbContext _db;
 
@@ -29,23 +29,31 @@ public class UserPlayerKillsEndpoint : EndpointWithoutRequest<PlayerKillsRespons
                                 .GroupBy(upk => new { upk.u.Xuid, upk.u.Name })
                                 .ToListAsync(ct);
 
-        var playerKills = userPlayerKills.Select(g => new PlayerKills
-        {
-            Xuid = g.Key.Xuid,
-            Name = g.Key.Name,
-            TotalKills = g.Count(),
-            PlayerKillsList = g.GroupBy(x => x.pk.EntityType)
-                                        .Select(eg => new PlayerKillList
-                                        {
-                                            EntityType = eg.Key,
-                                            KillCount = eg.Count()
-                                        }).ToList()
-        }).ToList();
+        UserPlayerKillsResponse response;
 
-        var response = new PlayerKillsResponse
+        if (userPlayerKills == null)
         {
-            PlayerKills = playerKills
-        };
+            response = response = new UserPlayerKillsResponse();
+        }
+        else
+        {
+            var group = userPlayerKills.First();
+            var playerKillsList = group
+                    .GroupBy(x => x.pk.EntityType)
+                    .Select(eg => new PlayerKillListUser
+                    {
+                        EntityType = eg.Key,
+                        KillCount = eg.Count()
+                    }).ToList();
+
+            response = response = new UserPlayerKillsResponse
+                                            {
+                                                Xuid = group.Key.Xuid,
+                                                Name = group.Key.Name,
+                                                TotalKills = group.Count(),
+                                                PlayerKillsList = playerKillsList
+                                            };
+        }
 
         await Send.OkAsync(response, ct);
     }
