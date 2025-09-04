@@ -1,16 +1,33 @@
 import { Avatar, Box, Tooltip } from "@mui/material";
-import { useWorldData } from "../context/WorldContext";
+import { useWorldData, type OnlinePlayers } from "../context/WorldContext";
+import { useState } from "react";
+import UserModal from "./UserModal/UserModal";
 
 const OnlineUserIndicator = () => {
   const { lastMessage } = useWorldData();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<OnlinePlayers | null>(null);
+
+  const handleUserClick = (player: OnlinePlayers) => {
+    setSelectedUser(player);
+    setModalOpen(true);
+  };
 
   return (
     <Box className="fixed z-50" style={{ top: "7.5rem", left: "7px" }}>
       <Box className="flex flex-col gap-2">
         <Box className="text-sm">
-          {lastMessage?.OnlinePlayers.map((player) => (
-            <Tooltip title={player.Name} placement="right">
+          {lastMessage?.OnlinePlayers
+            .reduce((distinct, player) => {
+              if (!distinct.find(p => p.Name === player.Name)) {
+                distinct.push(player);
+              }
+              return distinct;
+            }, [] as OnlinePlayers[])
+            .map((player) => (
+            <Tooltip title={player.Name} key={player.Name} placement="right">
               <Box
+                onClick={() => handleUserClick(player)}
                 key={player.Name}
                 sx={{
                   backgroundColor: "rgba(255, 255, 255, 1)",
@@ -33,6 +50,11 @@ const OnlineUserIndicator = () => {
           ))}
         </Box>
       </Box>
+      <UserModal
+        selectedUserXuid={selectedUser?.Xuid ?? NaN}
+        handleModalClose={() => setModalOpen(false)}
+        modalOpen={modalOpen}
+      />
     </Box>
   );
 };

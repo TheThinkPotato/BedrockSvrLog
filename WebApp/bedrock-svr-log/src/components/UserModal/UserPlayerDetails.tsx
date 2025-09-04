@@ -2,15 +2,15 @@ import { Avatar, Box } from "@mui/material"
 import { Typography } from "@mui/material"
 import type { UserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
 import { CheckCircle, Close } from "@mui/icons-material";
-import { type Duration } from "../../Hooks/useGetDurations";
+import { useGetUserDurations } from "../../Hooks/useGetUserDurations";
 
 
 interface UserPlayerDetailsProps {
-    selectedUser: Duration | null;
+    selectedUserXuid: number;
     userPlayerKills: UserPlayerKills | null;    
 }
 
-const UserPlayerDetails = ({ selectedUser, userPlayerKills }: UserPlayerDetailsProps) => {
+const UserPlayerDetails = ({ selectedUserXuid, userPlayerKills }: UserPlayerDetailsProps) => {
 
     const handlePlayerClass = (entity: UserPlayerKills | undefined) => {
         if (!entity || entity?.favouriteKillCount === 0) return "Human";
@@ -22,8 +22,9 @@ const UserPlayerDetails = ({ selectedUser, userPlayerKills }: UserPlayerDetailsP
         }
         return "Human";
       };
-
-
+      
+    const {data: usersDurations} = useGetUserDurations(selectedUserXuid);
+    
     return (
         <Box
         sx={{
@@ -36,7 +37,7 @@ const UserPlayerDetails = ({ selectedUser, userPlayerKills }: UserPlayerDetailsP
         }}
       >
         <Avatar
-          src={selectedUser?.diceBearAvatarUrl}
+          src={usersDurations?.diceBearAvatarUrl}
           sx={{
             width: 80,
             height: 80,
@@ -62,7 +63,7 @@ const UserPlayerDetails = ({ selectedUser, userPlayerKills }: UserPlayerDetailsP
             sx={{ gap: "0.5rem" }}
           >
             <span className="text-gray-300">Online: </span>
-            {selectedUser?.isOnline ? (
+            {usersDurations?.isOnline ? (
               <CheckCircle
                 sx={{ color: "#22c55e", fontSize: "1.2rem" }}
               />

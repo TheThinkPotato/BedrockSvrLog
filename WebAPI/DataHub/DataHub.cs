@@ -38,7 +38,7 @@ public class DataHub : Hub
                 LocationZ = l.User.LocationZ,
                 LocationDimension = l.User.LocationDimension,
                 AvatarLink = l.User.AvatarLink,
-                SpawnTime = l.SpawnTime
+                SpawnTime = l.SpawnTime,
             })
             .OrderBy(p => p.SpawnTime)
             .ToListAsync();

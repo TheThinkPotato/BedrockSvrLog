@@ -5,8 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { Box,IconButton } from '@mui/material'
 import { Map as MapIcon, Person as PersonIcon, Public as PublicIcon } from '@mui/icons-material'
 import HomeScreen from './components/HomeScreen'
-import UserStatsDrawer from './components/UserStatsDrawer'
-import WorldStatsDrawer from './components/WorldStatsDrawer'
+import UserStatsDrawer from './components/Drawers/UserStatsDrawer'
+import WorldStatsDrawer from './components/Drawers/WorldStatsDrawer'
 
 const queryClient = new QueryClient()
 

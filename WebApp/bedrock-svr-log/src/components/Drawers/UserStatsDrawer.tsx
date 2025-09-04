@@ -2,15 +2,15 @@ import { Drawer, Box, Typography, IconButton, Avatar } from "@mui/material";
 import { CheckCircle, Close, Close as CloseIcon } from "@mui/icons-material";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useGetDurations, type Duration } from "../Hooks/useGetDurations";
+import { useGetDurations, type Duration } from "../../Hooks/useGetDurations";
 import {
   formatDateTime,
   formatTimeCount,
   getTimeDifferenceTimeDateFull,
-} from "../Helpers/timeHelper";
+} from "../../Helpers/timeHelper";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import UserModal from "./UserModal/UserModal";
+import UserModal from "../UserModal/UserModal";
 
 const UserStatsDrawer = ({
   open,
@@ -24,18 +24,18 @@ const UserStatsDrawer = ({
 
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<Duration | null>(null);
+  const [selectedUser, setSelectedUser] = useState<number>(NaN);
 
   const isAnyoneOnline = durations?.durations.some((item) => item.isOnline);
 
   const handleUserClick = (user: Duration) => {
-    setSelectedUser(user);
+    setSelectedUser(user.xuid);
     setModalOpen(true);
   };
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setSelectedUser(null);
+    setSelectedUser(NaN);
   };
 
   useEffect(() => {
@@ -189,7 +189,7 @@ const UserStatsDrawer = ({
       </Box>
 
       <UserModal
-        selectedUser={selectedUser || null}
+        selectedUserXuid={selectedUser}
         handleModalClose={handleModalClose}
         modalOpen={modalOpen}
       />

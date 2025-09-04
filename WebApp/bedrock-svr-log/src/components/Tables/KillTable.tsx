@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { splitCamelCase } from "../Helpers/textHelper";
-import type { PlayerKillsList } from "../Hooks/useGetUserPlayerKills";
+import { splitCamelCase } from "../../Helpers/textHelper";
+import type { PlayerKillsList } from "../../Hooks/useGetUserPlayerKills";
 
 interface KillTableProps {
   data: PlayerKillsList[];
