@@ -1,40 +1,58 @@
-import { useState } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import { Box,IconButton } from '@mui/material'
-import { Map as MapIcon, Person as PersonIcon, Public as PublicIcon } from '@mui/icons-material'
-import HomeScreen from './components/HomeScreen'
-import UserStatsDrawer from './components/Drawers/UserStatsDrawer'
-import WorldStatsDrawer from './components/Drawers/WorldStatsDrawer'
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Box, IconButton } from "@mui/material";
+import {
+  Map as MapIcon,
+  Person as PersonIcon,
+  Public as PublicIcon,
+} from "@mui/icons-material";
+import HomeScreen from "./components/HomeScreen";
+import UserStatsDrawer from "./components/Drawers/UserStatsDrawer";
+import WorldStatsDrawer from "./components/Drawers/WorldStatsDrawer";
+import useGetWorld from "./Hooks/useGetWorld";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     primary: {
-      main: '#1976d2',
+      main: "#1976d2",
     },
     secondary: {
-      main: '#dc004e',
+      main: "#dc004e",
     },
   },
-})
+});
 
 function App() {
-  const [userStatsOpen, setUserStatsOpen] = useState(false)
-  const [worldStatsOpen, setWorldStatsOpen] = useState(false)
+  const [userStatsOpen, setUserStatsOpen] = useState(false);
+  const [worldStatsOpen, setWorldStatsOpen] = useState(false);
+  const [showSeedMap, setShowSeedMap] = useState(false);
+
+  const { data: world } = useGetWorld();
 
   const handleUserStatsToggle = () => {
-    setUserStatsOpen(!userStatsOpen)
-    if (worldStatsOpen) setWorldStatsOpen(false)
-  }
+    setUserStatsOpen(!userStatsOpen);
+    if (worldStatsOpen) setWorldStatsOpen(false);
+  };
+
+  const handleShowSeedMap = () => {
+    
+    if (world?.seed) {
+      setShowSeedMap(!showSeedMap);
+    }
+    
+    if (userStatsOpen) setUserStatsOpen(false);
+    if (worldStatsOpen) setWorldStatsOpen(false);
+  };
 
   const handleWorldStatsToggle = () => {
-    setWorldStatsOpen(!worldStatsOpen)
-    if (userStatsOpen) setUserStatsOpen(false)
-  }
+    setWorldStatsOpen(!worldStatsOpen);
+    if (userStatsOpen) setUserStatsOpen(false);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -44,7 +62,7 @@ function App() {
           {/* Main Content Area */}
           <Box className="flex-1 flex flex-col">
             <Box className="flex-1">
-              <HomeScreen />
+              <HomeScreen showSeedMap={showSeedMap} seed={world?.seed} />
             </Box>
           </Box>
 
@@ -52,26 +70,29 @@ function App() {
           <Box className="w-16 bg-gray-800 border-l border-gray-700 flex flex-col items-center py-4 space-y-4">
             <IconButton
               onClick={() => {
-                setUserStatsOpen(false)
-                setWorldStatsOpen(false)
+                handleShowSeedMap();
               }}
               className="text-blue-400 hover:text-blue-300"
               title="Map (Home)"
             >
               <MapIcon />
             </IconButton>
-            
+
             <IconButton
               onClick={handleUserStatsToggle}
-              className={`${userStatsOpen ? 'text-green-400' : 'text-gray-400'} hover:text-green-300`}
+              className={`${
+                userStatsOpen ? "text-green-400" : "text-gray-400"
+              } hover:text-green-300`}
               title="User Stats"
             >
               <PersonIcon />
             </IconButton>
-            
+
             <IconButton
               onClick={handleWorldStatsToggle}
-              className={`${worldStatsOpen ? 'text-green-400' : 'text-gray-400'} hover:text-green-300`}
+              className={`${
+                worldStatsOpen ? "text-green-400" : "text-gray-400"
+              } hover:text-green-300`}
               title="World Stats"
             >
               <PublicIcon />
@@ -79,20 +100,20 @@ function App() {
           </Box>
 
           {/* User Stats Drawer */}
-          <UserStatsDrawer 
-            open={userStatsOpen} 
-            onClose={() => setUserStatsOpen(false)} 
+          <UserStatsDrawer
+            open={userStatsOpen}
+            onClose={() => setUserStatsOpen(false)}
           />
 
           {/* World Stats Drawer */}
-          <WorldStatsDrawer 
-            open={worldStatsOpen} 
-            onClose={() => setWorldStatsOpen(false)} 
+          <WorldStatsDrawer
+            open={worldStatsOpen}
+            onClose={() => setWorldStatsOpen(false)}
           />
         </Box>
       </ThemeProvider>
     </QueryClientProvider>
-  )
+  );
 }
 
-export default App
+export default App;

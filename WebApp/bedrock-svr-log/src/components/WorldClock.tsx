@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { minecraftTicksToTime, minecraftTimeDayConvert } from "../Helpers/timeHelper";
 import { useWorldData } from "../context/WorldContext";
 
-const WorldClock = () => {
+const WorldClock = ({ showSeedMap }: { showSeedMap: boolean }) => {
   const { lastMessage } = useWorldData();
   const [shownTime, setShownTime] = useState<number>(NaN);
 
@@ -39,8 +39,8 @@ const WorldClock = () => {
     <Box
       className="fixed z-50"
       sx={{
-        left: "3rem",
-        top: "1.35rem",
+        ...(!showSeedMap ? { left: "3rem" } : { right: "6rem" }),      
+        ...(!showSeedMap ? { top: "1.35rem" } : { top: "0.75rem" }),
         backgroundColor: "rgba(255, 255, 255, 1)",
         minWidth: "160px",
         height: "33px",

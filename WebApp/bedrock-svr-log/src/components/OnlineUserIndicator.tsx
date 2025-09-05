@@ -3,7 +3,11 @@ import { useWorldData, type OnlinePlayers } from "../context/WorldContext";
 import { useState } from "react";
 import UserModal from "./UserModal/UserModal";
 
-const OnlineUserIndicator = () => {
+interface OnlineUserIndicatorProps {
+  showSeedMap: boolean;
+}
+
+const OnlineUserIndicator = ({ showSeedMap }: OnlineUserIndicatorProps) => {
   const { lastMessage } = useWorldData();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<OnlinePlayers | null>(null);
@@ -14,7 +18,7 @@ const OnlineUserIndicator = () => {
   };
 
   return (
-    <Box className="fixed z-50" style={{ top: "7.5rem", left: "7px" }}>
+    <Box className="fixed z-50" style={{ ...(!showSeedMap ? { left: "7px", top: "7.5rem" } : { right: "6rem", top: "5.1rem" }) }}>
       <Box className="flex flex-col gap-2">
         <Box className="text-sm">
           {lastMessage?.OnlinePlayers

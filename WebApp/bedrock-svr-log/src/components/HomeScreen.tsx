@@ -2,17 +2,24 @@ import { Box } from "@mui/material";
 import { useRef } from "react";
 import WorldClock from "./WorldClock";
 import OnlineUserIndicator from "./OnlineUserIndicator";
+import RefreshButton from "./RefreshButton";
 
-const HomeScreen = () => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+interface HomeScreenProps {
+  showSeedMap: boolean;
+  seed?: string;
+}
+
+const HomeScreen = ({ showSeedMap, seed }: HomeScreenProps) => {
+  const localMapRef = useRef<HTMLIFrameElement>(null);
+  const seedMapRef = useRef<HTMLIFrameElement>(null);
 
   const refreshIframe = () => {
-    if (iframeRef.current) {
-      const currentSrc = iframeRef.current.src;
-      iframeRef.current.src = "";
+    if (localMapRef.current) {
+      const currentSrc = localMapRef.current.src;
+      localMapRef.current.src = "";
       setTimeout(() => {
-        if (iframeRef.current) {
-          iframeRef.current.src = currentSrc;
+        if (localMapRef.current) {
+          localMapRef.current.src = currentSrc;
         }
       }, 100);
     }
@@ -20,46 +27,30 @@ const HomeScreen = () => {
 
   return (
     <Box className="w-full h-full p-4">
-      <Box className="w-full h-full rounded-lg overflow-hidden border border-gray-700">
-        <WorldClock />
-        <OnlineUserIndicator />
+      <Box className="w-full h-full rounded-lg overflow-hidden border border-gray-700 relative">
+        <WorldClock showSeedMap={showSeedMap} />
+        <OnlineUserIndicator showSeedMap={showSeedMap} />
 
-        <Box
-          className="fixed z-50"
-          style={{
-            left: "0.5rem",
-            top: "4.5rem",
-            backgroundColor: "rgba(255, 255, 255, 1)",
-            minWidth: "14px",
-            height: "33px",
-            borderRadius: "0.2rem",
-            boxShadow: "3px 3px 2px rgba(0, 0, 0, 0.2)",
-            color: "black",
-            fontFamily:
-              "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-            cursor: "pointer",
-            fontSize: "16px",
-          }}
-          onClick={refreshIframe}
-        >
-          <Box className="flex flex-col gap-2 overflow-y-auto max-h-[200px]">
-            <Box
-              style={{
-                fontSize: "16px",
-                paddingBlock: "0.2rem",
-                paddingInline: "0.5rem",
-              }}
-            >
-              {`↻`}
-            </Box>
-          </Box>
-        </Box>
+        {!showSeedMap && <RefreshButton refreshIframe={refreshIframe} />}
 
         <iframe
-          ref={iframeRef}
+          ref={localMapRef}
           src="map/index.html"
-          title="Bedrock Server Map"
-          className="w-full h-full border-0"
+          title="Bedrock Server Map - Local"
+          className={`w-full h-full border-0 absolute top-0 left-0 ${
+            !showSeedMap ? "z-10" : "z-0"
+          }`}
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+        />
+
+        <iframe
+          style={{ visibility: showSeedMap ? "visible" : "hidden" }}
+          ref={seedMapRef}
+          src={`https://map.jacobsjo.eu/?seed=${seed}`}
+          title="Bedrock Server Map - Seed"
+          className={`w-full h-full border-0 absolute top-0 left-0 ${
+            showSeedMap ? "z-10" : "z-0"
+          }`}
           sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
         />
       </Box>
