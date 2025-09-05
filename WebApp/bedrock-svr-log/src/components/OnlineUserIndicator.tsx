@@ -1,7 +1,8 @@
 import { Avatar, Box, Tooltip } from "@mui/material";
 import { useWorldData, type OnlinePlayers } from "../context/WorldContext";
 import { useState } from "react";
-import UserModal from "./UserModal/UserModal";
+import UserModal from "./Modals/UserModal/UserModal";
+
 
 interface OnlineUserIndicatorProps {
   showSeedMap: boolean;

@@ -8,7 +8,7 @@ import {
   Person as PersonIcon,
   Public as PublicIcon,
 } from "@mui/icons-material";
-import HomeScreen from "./components/HomeScreen";
+import HomeScreen from "./components/Screens/HomeScreen";
 import UserStatsDrawer from "./components/Drawers/UserStatsDrawer";
 import WorldStatsDrawer from "./components/Drawers/WorldStatsDrawer";
 import useGetWorld from "./Hooks/useGetWorld";

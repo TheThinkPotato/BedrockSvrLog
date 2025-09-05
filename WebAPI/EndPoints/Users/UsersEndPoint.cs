@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI;
 
-public class UsersEndpoint : EndpointWithoutRequest<UsersResponse>
+public class UsersEndpoint : EndpointWithoutRequest<UsersResponse[]>
 {
     private readonly AppDbContext _db;
 
@@ -22,7 +22,7 @@ public class UsersEndpoint : EndpointWithoutRequest<UsersResponse>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var users = await _db.User
-            .Select(u => new UserDTO
+            .Select(u => new UsersResponse
             {
                 Name = u.Name,
                 Xuid = u.Xuid,
@@ -30,6 +30,6 @@ public class UsersEndpoint : EndpointWithoutRequest<UsersResponse>
                 DiceBearAvatarUrl = u.AvatarLink ?? AvatarHelper.GetDiceBearAvatarUrl(u.Name)
             }).ToListAsync(ct);
 
-        await Send.OkAsync( new UsersResponse {Users = users }, ct);
+        await Send.OkAsync(users.ToArray(), ct);
     }
 }

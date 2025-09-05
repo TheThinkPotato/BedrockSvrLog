@@ -1,9 +1,9 @@
 import { Avatar, Box } from "@mui/material";
 import { Typography } from "@mui/material";
-import type { UserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
+import type { UserPlayerKills } from "../../../Hooks/useGetUserPlayerKills";
 import { CheckCircle, Close } from "@mui/icons-material";
-import { useGetUserDurations } from "../../Hooks/useGetUserDurations";
-import { getKillStatus } from "../../Helpers/creatureHelper";
+import { useGetUserDurations } from "../../../Hooks/useGetUserDurations";
+import { getKillStatus } from "../../../Helpers/creatureHelper";
 
 interface UserPlayerDetailsProps {
   selectedUserXuid: number;

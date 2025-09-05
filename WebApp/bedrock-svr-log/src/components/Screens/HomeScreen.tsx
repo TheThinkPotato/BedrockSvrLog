@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { useRef } from "react";
-import WorldClock from "./WorldClock";
-import OnlineUserIndicator from "./OnlineUserIndicator";
-import RefreshButton from "./RefreshButton";
+import WorldClock from "../WorldClock";
+import OnlineUserIndicator from "../OnlineUserIndicator";
+import RefreshButton from "../RefreshButton";
 
 interface HomeScreenProps {
   showSeedMap: boolean;

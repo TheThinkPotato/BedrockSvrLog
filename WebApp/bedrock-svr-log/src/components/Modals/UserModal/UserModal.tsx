@@ -1,10 +1,10 @@
 import { Modal, Box, Typography, IconButton, Fade } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { useGetUserRealmEvents } from "../../Hooks/useGetUserRealmEvents";
-import { useGetUserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
+import { useGetUserRealmEvents } from "../../../Hooks/useGetUserRealmEvents";
+import { useGetUserPlayerKills } from "../../../Hooks/useGetUserPlayerKills";
 import UserModalDetails from "./UserModalDetails";
 import UserPlayerDetails from "./UserPlayerDetails";
-import PlayerKillsTable from "../Tables/PlayerKillsTable";
+import PlayerKillsTable from "../../Tables/PlayerKillsTable";
 
 interface UserModalProps {
   selectedUserXuid: number ;

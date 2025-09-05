@@ -1,10 +1,5 @@
 ﻿namespace WebAPI;
-public class UsersResponse
-{
-    public List<UserDTO> Users { get; set; } = [];
-}
-
-public record UserDTO
+public record UsersResponse
 {
     public string Name { get; init; } = string.Empty;
     public string Xuid { get; init; } = string.Empty;

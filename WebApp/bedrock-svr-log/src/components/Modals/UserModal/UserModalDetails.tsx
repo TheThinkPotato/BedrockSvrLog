@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import { formatDateTime, formatTimeCount } from "../../Helpers/timeHelper";
-import { type UserPlayerKills } from "../../Hooks/useGetUserPlayerKills";
-import { type UserRealmEvent } from "../../Hooks/useGetUserRealmEvents";
-import RealmTable from "../Tables/RealmTable";
-import { useGetUserDurations } from "../../Hooks/useGetUserDurations";
-import { creatureNameCleanUp } from "../../Helpers/creatureHelper";
+import { formatDateTime, formatTimeCount } from "../../../Helpers/timeHelper";
+import { type UserPlayerKills } from "../../../Hooks/useGetUserPlayerKills";
+import { type UserRealmEvent } from "../../../Hooks/useGetUserRealmEvents";
+import RealmTable from "../../Tables/RealmTable";
+import { useGetUserDurations } from "../../../Hooks/useGetUserDurations";
+import { creatureNameCleanUp } from "../../../Helpers/creatureHelper";
 
 interface UserDetailsProps {
   selectedUserXuid: number;

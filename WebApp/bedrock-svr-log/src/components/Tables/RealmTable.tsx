@@ -5,7 +5,7 @@ import { formatDateTime } from "../../Helpers/timeHelper";
 import { splitCamelCase } from "../../Helpers/textHelper";
 import type { UserRealmEvent } from "../../Hooks/useGetUserRealmEvents";
 import type { RealmEvent } from "../../Hooks/useGetRealmEvents";
-import UserModal from "../UserModal/UserModal";
+import UserModal from "../Modals/UserModal/UserModal";
 
 interface RealmTableProps {
   data: RealmEvent[] | UserRealmEvent[];
