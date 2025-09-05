@@ -3,7 +3,6 @@ import { useWorldData, type OnlinePlayers } from "../context/WorldContext";
 import { useState } from "react";
 import UserModal from "./Modals/UserModal/UserModal";
 
-
 interface OnlineUserIndicatorProps {
   showSeedMap: boolean;
 }
@@ -19,17 +18,22 @@ const OnlineUserIndicator = ({ showSeedMap }: OnlineUserIndicatorProps) => {
   };
 
   return (
-    <Box className="fixed z-50" style={{ ...(!showSeedMap ? { left: "7px", top: "7.5rem" } : { right: "6rem", top: "5.1rem" }) }}>
+    <Box
+      className="fixed z-50"
+      style={{
+        ...(!showSeedMap
+          ? { left: "7px", top: "7.5rem" }
+          : { right: "6rem", top: "5.1rem" }),
+      }}
+    >
       <Box className="flex flex-col gap-2">
         <Box className="text-sm">
-          {lastMessage?.OnlinePlayers
-            .reduce((distinct, player) => {
-              if (!distinct.find(p => p.Name === player.Name)) {
-                distinct.push(player);
-              }
-              return distinct;
-            }, [] as OnlinePlayers[])
-            .map((player) => (
+          {lastMessage?.OnlinePlayers.reduce((distinct, player) => {
+            if (!distinct.find((p) => p.Name === player.Name)) {
+              distinct.push(player);
+            }
+            return distinct;
+          }, [] as OnlinePlayers[]).map((player) => (
             <Tooltip title={player.Name} key={player.Name} placement="right">
               <Box
                 onClick={() => handleUserClick(player)}
