@@ -6,7 +6,6 @@ import {
 } from "../Helpers/timeHelper";
 import { useWorldData } from "../context/WorldContext";
 import WorldModal from "./Modals/WorldModal/WorldModal";
-import useGetUsers from "../Hooks/useGetUsers";
 
 const WorldClock = ({ showSeedMap }: { showSeedMap: boolean }) => {
   const { lastMessage } = useWorldData();
@@ -43,9 +42,6 @@ const WorldClock = ({ showSeedMap }: { showSeedMap: boolean }) => {
 
   const currentDay = lastMessage?.CurrentDay;
 
-  const { lastMessage: world } = useWorldData();
-  const { data: users } = useGetUsers();
-
   return (
     <>
       <Box
@@ -53,15 +49,11 @@ const WorldClock = ({ showSeedMap }: { showSeedMap: boolean }) => {
         className="fixed z-50"
         sx={{
           ...(!showSeedMap
-            ? { left: "3rem", top: "1.35rem", height: "33px" }
-            : {
-                left: "1rem",
-                top: "15.5rem",
-                width: "17rem",
-                height: "9.1rem",
-              }),
+            ? { left: "3rem", top: "1.35rem" }
+            : { right: "6rem", top: "0.75rem" }),
           backgroundColor: "rgba(255, 255, 255, 1)",
           minWidth: "160px",
+          height: "33px",
           borderRadius: "0.2rem",
           boxShadow: "3px 3px 2px rgba(0, 0, 0, 0.2)",
           color: "black",
@@ -91,53 +83,6 @@ const WorldClock = ({ showSeedMap }: { showSeedMap: boolean }) => {
               </Box>
               {`Day ${currentDay} | ${minecraftTicksToTime(shownTime)}`}
             </Box>
-
-            {showSeedMap && (
-              <>
-                <Box
-                  className="text-sm"
-                  sx={{
-                    fontSize: "16px",
-                    paddingInline: "0.1rem",
-                    marginTop: "1rem",
-                  }}
-                >
-                  <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    World Name:{" "}
-                  </span>
-                  {world?.Name}
-                </Box>
-                <Box
-                  className="text-sm"
-                  sx={{
-                    fontSize: "16px",
-                    paddingInline: "0.1rem",
-                    marginTop: "0.25rem",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Seed:
-                  </span>
-                  {world?.Seed}
-                </Box>
-                <Box
-                  className="text-sm"
-                  sx={{
-                    fontSize: "16px",
-                    paddingInline: "0.1rem",
-                    marginTop: "1rem",
-                  }}
-                >
-                  <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Online Players:
-                  </span>
-                  {world?.OnlinePlayers.length} / {users?.length}
-                </Box>
-              </>
-            )}
           </Box>
         </Box>
       </Box>
