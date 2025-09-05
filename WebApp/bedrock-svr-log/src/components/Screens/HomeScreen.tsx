@@ -14,7 +14,18 @@ const HomeScreen = ({ showSeedMap, seed }: HomeScreenProps) => {
   const seedMapRef = useRef<HTMLIFrameElement>(null);
 
   const refreshIframe = () => {
-    if (localMapRef.current) {
+
+    if (seedMapRef.current && showSeedMap) {
+      const currentSrc = seedMapRef.current.src;
+      seedMapRef.current.src = "";
+      setTimeout(() => {
+        if (seedMapRef.current) {
+          seedMapRef.current.src = currentSrc;
+        }
+      }, 100);
+    }
+
+    if (localMapRef.current && !showSeedMap) {
       const currentSrc = localMapRef.current.src;
       localMapRef.current.src = "";
       setTimeout(() => {
@@ -30,10 +41,10 @@ const HomeScreen = ({ showSeedMap, seed }: HomeScreenProps) => {
       <Box className="w-full h-full rounded-lg overflow-hidden border border-gray-700 relative">
         <WorldClock showSeedMap={showSeedMap} />
         <OnlineUserIndicator showSeedMap={showSeedMap} />
-
-        {!showSeedMap && <RefreshButton refreshIframe={refreshIframe} />}
+        <RefreshButton refreshIframe={refreshIframe} showSeedMap={showSeedMap} />
 
         <iframe
+        style={{ visibility: !showSeedMap ? "visible" : "hidden" }}
           ref={localMapRef}
           src="map/index.html"
           title="Bedrock Server Map - Local"
@@ -46,7 +57,7 @@ const HomeScreen = ({ showSeedMap, seed }: HomeScreenProps) => {
         <iframe
           style={{ visibility: showSeedMap ? "visible" : "hidden" }}
           ref={seedMapRef}
-          src={`https://map.jacobsjo.eu/?seed=${seed}`}
+          src={`https://mcseedmap.net/1.21.60-Bedrock/${seed}`}
           title="Bedrock Server Map - Seed"
           className={`w-full h-full border-0 absolute top-0 left-0 ${
             showSeedMap ? "z-10" : "z-0"

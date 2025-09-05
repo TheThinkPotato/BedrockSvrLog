@@ -23,7 +23,7 @@ const OnlineUserIndicator = ({ showSeedMap }: OnlineUserIndicatorProps) => {
       style={{
         ...(!showSeedMap
           ? { left: "7px", top: "7.5rem" }
-          : { right: "6rem", top: "5.1rem" }),
+          : { left: "1rem", top: "10rem" }),
       }}
     >
       <Box className="flex flex-col gap-2">

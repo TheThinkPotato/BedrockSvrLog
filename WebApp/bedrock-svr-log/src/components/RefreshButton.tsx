@@ -2,15 +2,18 @@ import { Box } from "@mui/material"
 
 interface RefreshButtonProps {
     refreshIframe: () => void;
+    showSeedMap: boolean;
 }
 
-const RefreshButton = ({ refreshIframe }: RefreshButtonProps) => {
+const RefreshButton = ({ refreshIframe, showSeedMap }: RefreshButtonProps) => {
     return (
         <Box
           className="fixed z-50"
           style={{
-            left: "0.5rem",
-            top: "4.5rem",
+            ...(!showSeedMap
+              ? { left: "0.5rem", top: "4.5rem" }
+              : { left: "14rem", top: "6.5rem" }),
+                      
             backgroundColor: "rgba(255, 255, 255, 1)",
             minWidth: "14px",
             height: "33px",

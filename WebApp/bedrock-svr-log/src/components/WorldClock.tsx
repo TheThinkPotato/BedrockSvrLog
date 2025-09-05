@@ -50,7 +50,7 @@ const WorldClock = ({ showSeedMap }: { showSeedMap: boolean }) => {
         sx={{
           ...(!showSeedMap
             ? { left: "3rem", top: "1.35rem" }
-            : { right: "6rem", top: "0.75rem" }),
+            : { left: "1rem", top: "6.5rem" }),
           backgroundColor: "rgba(255, 255, 255, 1)",
           minWidth: "160px",
           height: "33px",
