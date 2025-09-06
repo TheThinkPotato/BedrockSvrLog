@@ -61,7 +61,18 @@ const RealmTable = ({
                 field="diceBearAvatarUrl"
                 header=""
                 className="text-white"
-                body={(item) => <Avatar src={item.diceBearAvatarUrl} />}
+                body={(item) => <Avatar src={item.diceBearAvatarUrl} 
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    boxShadow: "0 0 5px 0 rgba(96, 165, 250, 0.8)",
+                    transform: "scale(1.05)",
+                  },
+                }}
+                onClick={() =>
+                  RealmModal?.setSelectedUser(item.xuid)
+                }
+                />}
               />
             )}
             {showUsername && (

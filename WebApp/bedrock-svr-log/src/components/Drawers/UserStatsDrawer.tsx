@@ -102,7 +102,19 @@ const UserStatsDrawer = ({
                 field="diceBearAvatarUrl"
                 header=""
                 className="text-white"
-                body={(item) => <Avatar src={item.diceBearAvatarUrl} />}
+                body={(item) => (
+                  <Avatar
+                    src={item.diceBearAvatarUrl}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        boxShadow: "0 0 5px 0 rgba(96, 165, 250, 0.8)",
+                        transform: "scale(1.05)",
+                      },
+                    }}
+                    onClick={() => handleUserClick(item)}
+                  />
+                )}
               />
               <Column
                 field="name"
@@ -117,7 +129,7 @@ const UserStatsDrawer = ({
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "left",
-                      justifyContent: "left",                      
+                      justifyContent: "left",
                     }}
                     sx={{
                       "&:hover": { color: "#7cf" },
@@ -176,10 +188,9 @@ const UserStatsDrawer = ({
                 className="text-white"
                 body={(item) => (
                   <Typography>
-                    {item.lastLogOut && item.lastLogOut !== "" 
-                      ? formatDateTime(item.lastLogOut) 
-                      : formatDateTime(item.lastLogin)
-                    }
+                    {item.lastLogOut && item.lastLogOut !== ""
+                      ? formatDateTime(item.lastLogOut)
+                      : formatDateTime(item.lastLogin)}
                   </Typography>
                 )}
               />
