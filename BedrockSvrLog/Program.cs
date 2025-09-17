@@ -1,6 +1,5 @@
 ﻿using BedrockSvrLog.Data;
 using BedrockSvrLog.Helpers;
-using BedrockSvrLog.Models;
 using BedrockSvrLog.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;

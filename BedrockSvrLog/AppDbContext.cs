@@ -15,6 +15,8 @@ public class AppDbContext : DbContext
 
     public DbSet<PlayerDeaths> PlayerDeaths => Set<PlayerDeaths>();
     public DbSet<PlayerKills> PlayerKills => Set<PlayerKills>();
+    public DbSet<Paper> Paper => Set<Paper>();
+    public DbSet<Article> Article => Set<Article>();
 
     public AppDbContext(string connectionString)
     {
@@ -66,6 +68,35 @@ public class AppDbContext : DbContext
             .HasOne<User>()
             .WithMany()
             .HasForeignKey(pk => pk.Xuid)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Paper>()
+            .HasMany( p => p.Articles)
+            .WithOne(a => a.Paper)
+            .HasForeignKey(a => a.Id);
+
+        modelBuilder.Entity<Article>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.PlayerXuid)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Article>()
+            .HasOne(a => a.PlayerDeath)
+            .WithMany()
+            .HasForeignKey(a => a.PlayerDeathId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Article>()
+            .HasOne(a => a.PlayerKills)
+            .WithMany()
+            .HasForeignKey(a => a.PlayerKillsId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Article>()
+            .HasOne(a => a.RealmEvent)
+            .WithMany()
+            .HasForeignKey(a => a.RealmEventId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

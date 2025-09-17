@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace BedrockSvrLog.Model;
 public class User
 {
-    public string Name { get; set; } = string.Empty;
     [Key]
     public string Xuid { get; set; }
+    public string Name { get; set; } = string.Empty;
     public string? Pfid { get; set; }
     public string? AvatarLink { get; set; }
     public ICollection<Login> Logins { get; set; }

@@ -2,16 +2,14 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Box, IconButton } from "@mui/material";
-import {
-  Map as MapIcon,
-  Person as PersonIcon,
-  Public as PublicIcon,
-} from "@mui/icons-material";
+import { Box} from "@mui/material";
+
 import HomeScreen from "./components/Screens/HomeScreen";
 import UserStatsDrawer from "./components/Drawers/UserStatsDrawer";
 import WorldStatsDrawer from "./components/Drawers/WorldStatsDrawer";
+import NewspaperModal from "./components/Modals/NewspaperModal/NewspaperModal";
 import useGetWorld from "./Hooks/useGetWorld";
+import SideNav from "./components/SideNav";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +29,7 @@ function App() {
   const [userStatsOpen, setUserStatsOpen] = useState(false);
   const [worldStatsOpen, setWorldStatsOpen] = useState(false);
   const [showSeedMap, setShowSeedMap] = useState(false);
+  const [newspaperOpen, setNewspaperOpen] = useState(false);
 
   const { data: world } = useGetWorld();
 
@@ -54,6 +53,12 @@ function App() {
     if (userStatsOpen) setUserStatsOpen(false);
   };
 
+  const handleNewspaperToggle = () => {
+    setNewspaperOpen(!newspaperOpen);
+    if (userStatsOpen) setUserStatsOpen(false);
+    if (worldStatsOpen) setWorldStatsOpen(false);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
@@ -66,38 +71,16 @@ function App() {
             </Box>
           </Box>
 
-          {/* Right Side Menu */}
-          <Box className="w-16 bg-gray-800 border-l border-gray-700 flex flex-col items-center py-4 space-y-4">
-            <IconButton
-              onClick={() => {
-                handleShowSeedMap();
-              }}
-              className="text-blue-400 hover:text-blue-300"
-              title="Map (Home)"
-            >
-              <MapIcon />
-            </IconButton>
-
-            <IconButton
-              onClick={handleUserStatsToggle}
-              className={`${
-                userStatsOpen ? "text-green-400" : "text-gray-400"
-              } hover:text-green-300`}
-              title="User Stats"
-            >
-              <PersonIcon />
-            </IconButton>
-
-            <IconButton
-              onClick={handleWorldStatsToggle}
-              className={`${
-                worldStatsOpen ? "text-green-400" : "text-gray-400"
-              } hover:text-green-300`}
-              title="World Stats"
-            >
-              <PublicIcon />
-            </IconButton>
-          </Box>
+          <SideNav
+            handleShowSeedMap={handleShowSeedMap}
+            handleUserStatsToggle={handleUserStatsToggle}
+            handleWorldStatsToggle={handleWorldStatsToggle}
+            handleNewspaperToggle={handleNewspaperToggle}
+            userStatsOpen={userStatsOpen}
+            worldStatsOpen={worldStatsOpen}
+            newspaperOpen={newspaperOpen}
+          />
+          
 
           {/* User Stats Drawer */}
           <UserStatsDrawer
@@ -109,6 +92,12 @@ function App() {
           <WorldStatsDrawer
             open={worldStatsOpen}
             onClose={() => setWorldStatsOpen(false)}
+          />
+
+          {/* Newspaper Modal */}
+          <NewspaperModal
+            open={newspaperOpen}
+            onClose={() => setNewspaperOpen(false)}
           />
         </Box>
       </ThemeProvider>

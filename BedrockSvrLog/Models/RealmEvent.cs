@@ -8,13 +8,11 @@ namespace BedrockSvrLog.Model
         [Key]
         public int Id { get; set; }
         [ForeignKey("Xuid")]
-        public string Xuid { get; set; } = string.Empty; // Foreign key to User table
+        public string Xuid { get; set; } // Foreign key to User table
+        public virtual User User { get; set; }
+        
         public string EventType { get; set; } = string.Empty;
         public DateTime EventTime { get; set; }
-
-        // Navigation property
-        [ForeignKey("Xuid")]
-        public User User { get; set; }
 
         public RealmEvent()
         {
