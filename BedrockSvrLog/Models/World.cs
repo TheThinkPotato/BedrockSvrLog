@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BedrockSvrLog.Model
+namespace BedrockSvrLog.Models
 {
     public class World
     {

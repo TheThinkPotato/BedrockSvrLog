@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BedrockSvrLog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250916074926_AddedNewsPaperTablesAndRefactor")]
-    partial class AddedNewsPaperTablesAndRefactor
+    [Migration("20250918123656_AddedNewsPaperTablesAndRefactorFixed")]
+    partial class AddedNewsPaperTablesAndRefactorFixed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,80 @@ namespace BedrockSvrLog.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
 
-            modelBuilder.Entity("BedrockSvrLog.Model.Login", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.Article", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GameDay")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PaperId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PlayerDeathId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PlayerKillsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PlayerName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PlayerSpawnX")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerSpawnY")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerSpawnZ")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PlayerXuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PublishedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RealmEventId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Subtitle")
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("Tags")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaperId");
+
+                    b.HasIndex("PlayerDeathId");
+
+                    b.HasIndex("PlayerKillsId");
+
+                    b.HasIndex("PlayerXuid");
+
+                    b.HasIndex("RealmEventId");
+
+                    b.ToTable("Article");
+                });
+
+            modelBuilder.Entity("BedrockSvrLog.Models.Login", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +125,21 @@ namespace BedrockSvrLog.Migrations
                     b.ToTable("Login");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Model.PlayerDeaths", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.Paper", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("PublishDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Paper");
+                });
+
+            modelBuilder.Entity("BedrockSvrLog.Models.PlayerDeaths", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,189 +205,6 @@ namespace BedrockSvrLog.Migrations
                     b.ToTable("PlayerDeaths");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Model.RealmEvent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("EventTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Xuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Xuid");
-
-                    b.ToTable("RealmEvent");
-                });
-
-            modelBuilder.Entity("BedrockSvrLog.Model.User", b =>
-                {
-                    b.Property<string>("Xuid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AvatarLink")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LocationDimension")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("LocationX")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LocationY")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LocationZ")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Pfid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("SpawnX")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SpawnY")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SpawnZ")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Xuid");
-
-                    b.ToTable("User");
-                });
-
-            modelBuilder.Entity("BedrockSvrLog.Model.World", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CurrentDay")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CurrentTime")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Seed")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("SpawnX")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SpawnY")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SpawnZ")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("World");
-                });
-
-            modelBuilder.Entity("BedrockSvrLog.Models.Article", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("GameDay")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GameTime")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PaperId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("PlayerDeathId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("PlayerKillsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("PlayerName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PlayerSpawnX")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PlayerSpawnY")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PlayerSpawnZ")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("PlayerXuid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("PublishedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("RealmEventId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Subtitle")
-                        .HasColumnType("TEXT");
-
-                    b.PrimitiveCollection<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerDeathId");
-
-                    b.HasIndex("PlayerKillsId");
-
-                    b.HasIndex("PlayerXuid");
-
-                    b.HasIndex("RealmEventId");
-
-                    b.ToTable("Article");
-                });
-
-            modelBuilder.Entity("BedrockSvrLog.Models.Paper", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("PublishDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Paper");
-                });
-
             modelBuilder.Entity("BedrockSvrLog.Models.PlayerKills", b =>
                 {
                     b.Property<int>("Id")
@@ -357,63 +261,114 @@ namespace BedrockSvrLog.Migrations
                     b.ToTable("PlayerKills");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Model.Login", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.RealmEvent", b =>
                 {
-                    b.HasOne("BedrockSvrLog.Model.User", "User")
-                        .WithMany("Logins")
-                        .HasForeignKey("Xuid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("User");
+                    b.Property<DateTime>("EventTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Xuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Xuid");
+
+                    b.ToTable("RealmEvent");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Model.PlayerDeaths", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.User", b =>
                 {
-                    b.HasOne("BedrockSvrLog.Model.User", null)
-                        .WithMany()
-                        .HasForeignKey("KillerXuid")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.Property<string>("Xuid")
+                        .HasColumnType("TEXT");
 
-                    b.HasOne("BedrockSvrLog.Model.User", "Killer")
-                        .WithMany()
-                        .HasForeignKey("KillerXuid1");
+                    b.Property<string>("AvatarLink")
+                        .HasColumnType("TEXT");
 
-                    b.HasOne("BedrockSvrLog.Model.User", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerXuid");
+                    b.Property<string>("LocationDimension")
+                        .HasColumnType("TEXT");
 
-                    b.HasOne("BedrockSvrLog.Model.User", null)
-                        .WithMany()
-                        .HasForeignKey("Xuid")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<int?>("LocationX")
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("Killer");
+                    b.Property<int?>("LocationY")
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("Player");
+                    b.Property<int?>("LocationZ")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Pfid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("SpawnX")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SpawnY")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SpawnZ")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Xuid");
+
+                    b.ToTable("User");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Model.RealmEvent", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.World", b =>
                 {
-                    b.HasOne("BedrockSvrLog.Model.User", "User")
-                        .WithMany("RealmEvents")
-                        .HasForeignKey("Xuid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("User");
+                    b.Property<int>("CurrentDay")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CurrentTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Seed")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("SpawnX")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SpawnY")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SpawnZ")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("World");
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.Article", b =>
                 {
                     b.HasOne("BedrockSvrLog.Models.Paper", "Paper")
                         .WithMany("Articles")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("PaperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BedrockSvrLog.Model.PlayerDeaths", "PlayerDeath")
+                    b.HasOne("BedrockSvrLog.Models.PlayerDeaths", "PlayerDeath")
                         .WithMany()
                         .HasForeignKey("PlayerDeathId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -423,12 +378,12 @@ namespace BedrockSvrLog.Migrations
                         .HasForeignKey("PlayerKillsId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("BedrockSvrLog.Model.User", "User")
+                    b.HasOne("BedrockSvrLog.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("PlayerXuid")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("BedrockSvrLog.Model.RealmEvent", "RealmEvent")
+                    b.HasOne("BedrockSvrLog.Models.RealmEvent", "RealmEvent")
                         .WithMany()
                         .HasForeignKey("RealmEventId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -444,13 +399,50 @@ namespace BedrockSvrLog.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Models.PlayerKills", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.Login", b =>
                 {
-                    b.HasOne("BedrockSvrLog.Model.User", "Player")
+                    b.HasOne("BedrockSvrLog.Models.User", "User")
+                        .WithMany("Logins")
+                        .HasForeignKey("Xuid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BedrockSvrLog.Models.PlayerDeaths", b =>
+                {
+                    b.HasOne("BedrockSvrLog.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("KillerXuid")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BedrockSvrLog.Models.User", "Killer")
+                        .WithMany()
+                        .HasForeignKey("KillerXuid1");
+
+                    b.HasOne("BedrockSvrLog.Models.User", "Player")
                         .WithMany()
                         .HasForeignKey("PlayerXuid");
 
-                    b.HasOne("BedrockSvrLog.Model.User", null)
+                    b.HasOne("BedrockSvrLog.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("Xuid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Killer");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("BedrockSvrLog.Models.PlayerKills", b =>
+                {
+                    b.HasOne("BedrockSvrLog.Models.User", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerXuid");
+
+                    b.HasOne("BedrockSvrLog.Models.User", null)
                         .WithMany()
                         .HasForeignKey("Xuid")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -459,16 +451,27 @@ namespace BedrockSvrLog.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("BedrockSvrLog.Model.User", b =>
+            modelBuilder.Entity("BedrockSvrLog.Models.RealmEvent", b =>
                 {
-                    b.Navigation("Logins");
+                    b.HasOne("BedrockSvrLog.Models.User", "User")
+                        .WithMany("RealmEvents")
+                        .HasForeignKey("Xuid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("RealmEvents");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.Paper", b =>
                 {
                     b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("BedrockSvrLog.Models.User", b =>
+                {
+                    b.Navigation("Logins");
+
+                    b.Navigation("RealmEvents");
                 });
 #pragma warning restore 612, 618
         }

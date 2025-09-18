@@ -32,6 +32,7 @@ class Program
     public static RealmRepository _realmRepo;
     public static PlayerKillRepository _playerKillRepo;
     public static PlayerDeathRepository _playerDeathRepo;
+    public static NewsPaperRepository _newsPaperRepo;
 
     private const string SplashText = $"\t{Title} Version {Version}\n\tBy Daniel Lopez.";
     static async Task Main(string[] args)
@@ -51,6 +52,7 @@ class Program
         var _realmRepo = new RealmRepository(MyAppDbContext);
         var _playerKillRepo = new PlayerKillRepository(MyAppDbContext);
         var _playerDeathRepo = new PlayerDeathRepository(MyAppDbContext);
+        var _newsPaperRepo = new NewsPaperRepository(MyAppDbContext);
 
         //Update missing avatars
         await _userRepo.UpdateMissingUserAvatarLinks(new CancellationToken());

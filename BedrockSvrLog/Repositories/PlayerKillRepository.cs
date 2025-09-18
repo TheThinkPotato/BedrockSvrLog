@@ -1,5 +1,4 @@
 ﻿using BedrockSvrLog.Data;
-using BedrockSvrLog.Model;
 using BedrockSvrLog.Models;
 
 namespace BedrockSvrLog.Repositories;

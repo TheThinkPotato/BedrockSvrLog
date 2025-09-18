@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using BedrockSvrLog.Models.Base;
-using BedrockSvrLog.Models;
 
-namespace BedrockSvrLog.Model;
+namespace BedrockSvrLog.Models;
 
 public class PlayerDeaths : PlayerDayTimeLocationSpawnEntity
 {

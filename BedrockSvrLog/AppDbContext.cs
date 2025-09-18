@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BedrockSvrLog.Model;
 using BedrockSvrLog.Models;
 
 namespace BedrockSvrLog.Data;
@@ -73,7 +72,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Paper>()
             .HasMany( p => p.Articles)
             .WithOne(a => a.Paper)
-            .HasForeignKey(a => a.Id);
+            .HasForeignKey(a => a.PaperId);
 
         modelBuilder.Entity<Article>()
             .HasOne(a => a.User)

@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BedrockSvrLog.Model;
+namespace BedrockSvrLog.Models;
 public class User
 {
     [Key]
-    public string Xuid { get; set; }
+    public required string Xuid { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Pfid { get; set; }
     public string? AvatarLink { get; set; }

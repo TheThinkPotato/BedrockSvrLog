@@ -1,5 +1,4 @@
-﻿using BedrockSvrLog.Model;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BedrockSvrLog.Models;
@@ -20,9 +19,8 @@ public class Article
     [ForeignKey("Id")]
     public int? RealmEventId { get; set; } 
     public virtual RealmEvent? RealmEvent { get; set; }
-    [ForeignKey("Id")]
     public int PaperId { get; set; }
-    public required virtual Paper Paper { get; set; }
+    public virtual Paper Paper { get; set; }
 
     public required string Title { get; set; }
     public string? Subtitle { get; set; }

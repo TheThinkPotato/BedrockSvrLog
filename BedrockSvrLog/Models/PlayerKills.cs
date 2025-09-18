@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using BedrockSvrLog.Models.Base;
-using BedrockSvrLog.Model;
 
 namespace BedrockSvrLog.Models;
 

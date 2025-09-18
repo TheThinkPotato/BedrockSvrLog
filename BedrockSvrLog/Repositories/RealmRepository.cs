@@ -1,7 +1,6 @@
 ﻿using BedrockSvrLog.Data;
-using Microsoft.EntityFrameworkCore;
-using BedrockSvrLog.Model;
 using BedrockSvrLog.Helpers;
+using BedrockSvrLog.Models;
 
 namespace BedrockSvrLog.Repositories;
 
