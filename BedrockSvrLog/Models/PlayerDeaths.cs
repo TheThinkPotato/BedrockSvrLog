@@ -8,11 +8,16 @@ public class PlayerDeaths : PlayerDayTimeLocationSpawnEntity
 {
     [Key]
     public int Id { get; set; }
-    [ForeignKey("Xuid")]
-    public string Xuid { get; set; } = string.Empty; // Foreign key to User table
+
+    [Required]
+    [ForeignKey(nameof(Player))]
+    public string Xuid { get; set; } = string.Empty;
+
     public virtual User? Player { get; set; }
-    [ForeignKey("Xuid")]
-    public string? KillerXuid { get; set; } = string.Empty;
+
+    [ForeignKey(nameof(Killer))]
+    public string? KillerXuid { get; set; }
+
     public virtual User? Killer { get; set; }
 
     public DateTime DeathTime { get; set; }

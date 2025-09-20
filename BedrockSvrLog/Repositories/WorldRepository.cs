@@ -35,7 +35,7 @@ public class WorldRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating world name in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating world name in DB: {ex}");
         }
     }
 
@@ -61,7 +61,7 @@ public class WorldRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating world seed in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating world seed in DB: {ex}");
         }
     }
 
@@ -83,7 +83,7 @@ public class WorldRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating world day and time in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating world day and time in DB: {ex}");
         }
     }
 

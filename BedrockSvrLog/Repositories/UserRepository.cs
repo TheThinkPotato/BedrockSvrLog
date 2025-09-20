@@ -16,7 +16,7 @@ public class UserRepository
 
     public void addUserToDb(string name, string xuid, string? pfid)
     {
-        FileHelpers.writeToDebugFile($"Debug: Adding new user to database: Name: {name}, XUID: {xuid}, PFID: {pfid}");
+        FileHelpers.WriteToDebugFile($"Debug: Adding new user to database: Name: {name}, XUID: {xuid}, PFID: {pfid}");
         try
         {
 
@@ -36,7 +36,7 @@ public class UserRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error adding user to DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error adding user to DB: {ex}");
         }
     }
 
@@ -53,13 +53,13 @@ public class UserRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating user PFID in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating user PFID in DB: {ex}");
         }
     }
 
     public async Task UpdateUserLocationAsync(EntityLocation location, CancellationToken ct)
     {
-        FileHelpers.writeToDebugFile($"Debug: Updating user location in database: XUID: {location.EntityName}, Location: {location}");
+        FileHelpers.WriteToDebugFile($"Debug: Updating user location in database: XUID: {location.EntityName}, Location: {location}");
 
         var user = await _context.User.Where(u => u.Name == location.EntityName).SingleOrDefaultAsync(ct);
         if (user != null)
@@ -101,7 +101,7 @@ public class UserRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating user avatar links in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating user avatar links in DB: {ex}");
         }
     }
 }

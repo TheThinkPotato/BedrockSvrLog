@@ -31,7 +31,7 @@ public class RealmRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error adding realm event to DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error adding realm event to DB: {ex}");
         }
     }
 }

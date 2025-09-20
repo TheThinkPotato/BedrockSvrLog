@@ -40,12 +40,12 @@ public static class LogHelpers
         string xuid = logLine.Substring(startIndex, endIndex - startIndex).Trim().Replace("[", "").Replace("]", "").Trim();
         if (string.IsNullOrEmpty(xuid))
         {
-            FileHelpers.writeToDebugFile($"Error: Unable to extract XUID from log line: {logLine}");
+            FileHelpers.WriteToDebugFile($"Error: Unable to extract XUID from log line: {logLine}");
             return null;
         }
         if (string.IsNullOrEmpty(eventType))
         {
-            FileHelpers.writeToDebugFile($"Error: Unable to extract event type from log line: {logLine}");
+            FileHelpers.WriteToDebugFile($"Error: Unable to extract event type from log line: {logLine}");
             return null;
         }
 
@@ -65,7 +65,7 @@ public static class LogHelpers
 
         if (startIndex <= 0 || endIndex <= startIndex)
         {
-            FileHelpers.writeToDebugFile($"Error: Unable to extract timestamp from log line: {logLine}");
+            FileHelpers.WriteToDebugFile($"Error: Unable to extract timestamp from log line: {logLine}");
             return DateTime.Now;
         }
 
@@ -85,7 +85,7 @@ public static class LogHelpers
         }
         else
         {
-            FileHelpers.writeToDebugFile($"Error: Unable to parse date time from log line: {logLine}");
+            FileHelpers.WriteToDebugFile($"Error: Unable to parse date time from log line: {logLine}");
             return DateTime.Now;
         }
     }
@@ -99,7 +99,7 @@ public static class LogHelpers
             File.WriteAllText(ignoreFilePath, "");
         }
         playerIgnoreList = File.ReadAllLines(ignoreFilePath).Select(p => p.Trim()).ToList();
-        FileHelpers.writeToDebugFile($"Debug: Loaded {playerIgnoreList.Count} players from ignore list.");
+        FileHelpers.WriteToDebugFile($"Debug: Loaded {playerIgnoreList.Count} players from ignore list.");
     }
 
 
@@ -113,7 +113,7 @@ public static class LogHelpers
 
         if (playerIgnoreList.Contains(playerName))
         {
-            FileHelpers.writeToDebugFile($"Debug: Ignoring player {playerName} as they are in the ignore list.");
+            FileHelpers.WriteToDebugFile($"Debug: Ignoring player {playerName} as they are in the ignore list.");
             return true; // Player is in the ignore list
         }
         return false; // Player is not in the ignore list

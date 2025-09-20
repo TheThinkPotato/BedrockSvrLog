@@ -15,7 +15,7 @@ public class LoginRepository
 
     public void addUserLoginToDb(string xuid, DateTime loginTime)
     {
-        FileHelpers.writeToDebugFile($"Debug: Adding user login to database: XUID: {xuid}, Login Time: {loginTime}");
+        FileHelpers.WriteToDebugFile($"Debug: Adding user login to database: XUID: {xuid}, Login Time: {loginTime}");
         try
         {
             var user = _context.User.Find(xuid);
@@ -32,13 +32,13 @@ public class LoginRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error adding user login to DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error adding user login to DB: {ex}");
         }
     }
 
     public void updateUserLoginSpawnTime(string xuid, DateTime spawnTime)
     {
-        FileHelpers.writeToDebugFile($"Debug: Updating user login spawn time in database: XUID: {xuid}, Spawn Time: {spawnTime}");
+        FileHelpers.WriteToDebugFile($"Debug: Updating user login spawn time in database: XUID: {xuid}, Spawn Time: {spawnTime}");
         try
         {
             var login = _context.Login.OrderByDescending(l => l.LoginTime)
@@ -51,13 +51,13 @@ public class LoginRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating user login spawn time in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating user login spawn time in DB: {ex}");
         }
     }
 
     public void updateUserLoginLogoutTime(string xuid, DateTime logoutTime)
     {
-        FileHelpers.writeToDebugFile($"Debug: Updating user login logout time in database: XUID: {xuid}, Logout Time: {logoutTime}");
+        FileHelpers.WriteToDebugFile($"Debug: Updating user login logout time in database: XUID: {xuid}, Logout Time: {logoutTime}");
         try
         {
             var login = _context.Login.OrderByDescending(l => l.LoginTime)
@@ -79,7 +79,7 @@ public class LoginRepository
         }
         catch (Exception ex)
         {
-            FileHelpers.writeToDebugFile($"Error updating user login logout time in DB: {ex}");
+            FileHelpers.WriteToDebugFile($"Error updating user login logout time in DB: {ex}");
         }
     }
 }

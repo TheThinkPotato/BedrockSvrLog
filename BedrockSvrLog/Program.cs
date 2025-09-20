@@ -54,14 +54,16 @@ class Program
         var _playerDeathRepo = new PlayerDeathRepository(MyAppDbContext);
         var _newsPaperRepo = new NewsPaperRepository(MyAppDbContext);
 
+        var _schedulerRepo = new SchedulerRepository(_newsPaperRepo);
+
         //Update missing avatars
         await _userRepo.UpdateMissingUserAvatarLinks(new CancellationToken());
 
-        underlinedText(SplashText, '=', 1);
+        UnderlinedText(SplashText, '=', 1);
 
         ServerApiBridgeScript.checkSetupServerApiBridgeScript();
 
-        underline(SplashText.Length, '=', 1, 1);
+        Underline(SplashText.Length, '=', 1, 1);
 
         try
         {
@@ -82,7 +84,13 @@ class Program
                 _worldRepo.UpdateWorldSeed(worldSeed);
             }
 
-            underline(SplashText.Length, '=', 0, 2);
+            var schedulerTask = Task.Run(async () =>
+            {
+                await _schedulerRepo.StartScheduler();
+                UnderlinedText($"Started Scheduled Tasks\n{_schedulerRepo.GetStringOfJobs()}", '-', newLines: 1);
+            });
+
+            Underline(SplashText.Length, '=', 0, 2);
 
             LogHelpers.InitiliazeAndLoadPlayerIgnoreList();
 
@@ -97,7 +105,6 @@ class Program
                 CreateNoWindow = false
             };
 
-
             var exeFullPath = Path.Combine(bedrockServerFolderLocation, psi.FileName);
 
             if (!File.Exists(exeFullPath))
@@ -109,6 +116,8 @@ class Program
 
             using var process = new Process { StartInfo = psi };
             process.Start();
+
+            _newsPaperRepo.GeneratePaper(1, new CancellationToken());
 
             // Task to read and log stdout
             var outputTask = Task.Run(async () =>
@@ -220,13 +229,13 @@ class Program
         catch (Exception ex)
         {
             var currentTimeDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            FileHelpers.writeToDebugFile($"{currentTimeDate} Exception: " + ex.ToString());
+            FileHelpers.WriteToDebugFile($"{currentTimeDate} Exception: " + ex.ToString());
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
         }
     }
 
-    public static void underlinedText(string text, char character, int newLines = 0)
+    public static void UnderlinedText(string text, char character, int newLines = 0)
     {
         Console.WriteLine(new string(character, text.Length));
         Console.WriteLine(text);
@@ -237,7 +246,7 @@ class Program
         }
     }
 
-    public static void underline(int numberCharWidth, char character, int previousLines = 0, int postLines = 0)
+    public static void Underline(int numberCharWidth, char character, int previousLines = 0, int postLines = 0)
     {
         for (int i = 0; i < previousLines; i++)
         {

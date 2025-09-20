@@ -6,7 +6,7 @@ public static class FileHelpers
     public const string DebugFile = Program.DebugFile;
 
     public const string ServerConfigFile = "server.properties";
-    public static void writeToDebugFile(string message)
+    public static void WriteToDebugFile(string message)
     {
         var debugFilePath = $"{LogFolder}\\{DebugFile}";
         if (!File.Exists(debugFilePath))

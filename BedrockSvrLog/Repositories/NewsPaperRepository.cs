@@ -14,7 +14,7 @@ public class NewsPaperRepository
 
     }
 
-    public async Task<List<PlayerDeaths>> getPlayerDeathArticleAsync(int? lastNumOfDays, int? take, CancellationToken ct)
+    public async Task<List<PlayerDeaths>> getPlayerDeathDetailsAsync(int? lastNumOfDays, int? take, CancellationToken ct)
     {
         var currentDate = DateTime.Now;
         var sevenDaysAgo = currentDate.AddDays(-lastNumOfDays ?? -7);
@@ -27,7 +27,7 @@ public class NewsPaperRepository
         return playerDeaths;
     }
 
-    public async Task<List<PlayerKillArticleDto>> getPlayerKillArticlAsync(int? lastNumOfDays, int? take, CancellationToken ct)
+    public async Task<List<PlayerKillArticleDto>> getPlayerKillDetailsAsync(int? lastNumOfDays, int? take, CancellationToken ct)
     {
         var currentDate = DateTime.Now;
         var sevenDaysAgo = currentDate.AddDays(-lastNumOfDays ?? -7);
@@ -54,7 +54,7 @@ public class NewsPaperRepository
         return playerKills;
     }
 
-    public async Task<List<RealmEvent>> getRealmEventArticlAsync(int? lastNumOfDays, int? take, CancellationToken ct)
+    public async Task<List<RealmEvent>> getRealmEventDetailsAsync(int? lastNumOfDays, int? take, CancellationToken ct)
     {
         var currentDate = DateTime.Now;
         var sevenDaysAgo = currentDate.AddDays(-lastNumOfDays ?? -7);
@@ -67,9 +67,9 @@ public class NewsPaperRepository
 
     public async Task GeneratePaper(int maxNumberOfArticles, CancellationToken ct)
     {
-        var playerDeaths = await getPlayerDeathArticleAsync(lastNumOfDays: 7, take: 2, ct);
-        var realmEvents = await getRealmEventArticlAsync(lastNumOfDays: 7, take: 2, ct);
-        var playerKills = await getPlayerKillArticlAsync(lastNumOfDays: 7, take: 4, ct);
+        var playerDeaths = await getPlayerDeathDetailsAsync(lastNumOfDays: 7, take: 2, ct);
+        var realmEvents = await getRealmEventDetailsAsync(lastNumOfDays: 7, take: 2, ct);
+        var playerKills = await getPlayerKillDetailsAsync(lastNumOfDays: 7, take: 4, ct);
 
         // Create the paper first
         var paper = new Paper
@@ -107,7 +107,7 @@ public class NewsPaperRepository
         var articles = new List<Article>();
         foreach (var realmEvent in realmEvents)
         {
-            string playerName = realmEvent.User?.Name ?? "Unknown";
+            string playerName = realmEvent.User?.Name ?? "name not disclosed";
             articles.Add(new Article
             {
                 PaperId = paperId,
@@ -130,7 +130,7 @@ public class NewsPaperRepository
 
         foreach (var playerDeath in playerDeaths)
         {
-            string playerName = playerDeath.Player?.Name ?? "Unknown";
+            string playerName = playerDeath.Player?.Name ?? "name not disclosed";
 
             articles.Add(new Article
             {

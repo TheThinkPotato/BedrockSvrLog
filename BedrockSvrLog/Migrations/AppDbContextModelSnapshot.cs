@@ -87,7 +87,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasIndex("RealmEventId");
 
-                    b.ToTable("Article");
+                    b.ToTable("Article", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.Login", b =>
@@ -119,7 +119,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasIndex("Xuid");
 
-                    b.ToTable("Login");
+                    b.ToTable("Login", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.Paper", b =>
@@ -133,7 +133,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Paper");
+                    b.ToTable("Paper", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.PlayerDeaths", b =>
@@ -199,7 +199,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasIndex("Xuid");
 
-                    b.ToTable("PlayerDeaths");
+                    b.ToTable("PlayerDeaths", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.PlayerKills", b =>
@@ -255,7 +255,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasIndex("Xuid");
 
-                    b.ToTable("PlayerKills");
+                    b.ToTable("PlayerKills", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.RealmEvent", b =>
@@ -279,7 +279,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasIndex("Xuid");
 
-                    b.ToTable("RealmEvent");
+                    b.ToTable("RealmEvent", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.User", b =>
@@ -320,7 +320,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasKey("Xuid");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.World", b =>
@@ -354,7 +354,7 @@ namespace BedrockSvrLog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("World");
+                    b.ToTable("World", (string)null);
                 });
 
             modelBuilder.Entity("BedrockSvrLog.Models.Article", b =>
