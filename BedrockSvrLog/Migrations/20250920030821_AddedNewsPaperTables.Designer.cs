@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BedrockSvrLog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250918123656_AddedNewsPaperTablesAndRefactorFixed")]
-    partial class AddedNewsPaperTablesAndRefactorFixed
+    [Migration("20250920030821_AddedNewsPaperTables")]
+    partial class AddedNewsPaperTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
