@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using BedrockSvrLog.Models;
 using System.Runtime.CompilerServices;
+using BedrockSvrLog.Helpers;
 
 namespace BedrockSvrLog.Repositories;
 
@@ -19,7 +20,10 @@ public class NewsPaperRepository
         var currentDate = DateTime.Now;
         var sevenDaysAgo = currentDate.AddDays(-lastNumOfDays ?? -7);
 
-        var playerDeaths = await _context.PlayerDeaths.Where(pd => pd.DeathTime > sevenDaysAgo)
+        var playerDeaths = await _context.PlayerDeaths
+            .Include(pd => pd.Player)
+            .Include(pd => pd.Killer)
+            .Where(pd => pd.DeathTime > sevenDaysAgo)
             .OrderByDescending(pd => pd.DeathTime)
             .Take(take ?? 2)
             .ToListAsync(ct);
@@ -58,7 +62,9 @@ public class NewsPaperRepository
     {
         var currentDate = DateTime.Now;
         var sevenDaysAgo = currentDate.AddDays(-lastNumOfDays ?? -7);
-        var realmEvents = await _context.RealmEvent.Where(re => re.EventTime > sevenDaysAgo)
+        var realmEvents = await _context.RealmEvent
+            .Include(re => re.User)
+            .Where(re => re.EventTime > sevenDaysAgo)
             .OrderByDescending(re => re.EventTime)
             .Take(take ?? 2)
             .ToListAsync(ct);

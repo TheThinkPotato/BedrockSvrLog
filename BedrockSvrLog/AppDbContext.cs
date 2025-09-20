@@ -52,19 +52,19 @@ public class AppDbContext : DbContext
             .HasForeignKey(l => l.Xuid);
 
         modelBuilder.Entity<PlayerDeaths>()
-            .HasOne<User>()
+            .HasOne(pd => pd.Player)
             .WithMany()
             .HasForeignKey(pd => pd.Xuid)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<PlayerDeaths>()
-            .HasOne<User>()
+            .HasOne(pd => pd.Killer)
             .WithMany()
             .HasForeignKey(pd => pd.KillerXuid)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<PlayerKills>()
-            .HasOne<User>()
+            .HasOne(pk => pk.Player)
             .WithMany()
             .HasForeignKey(pk => pk.Xuid)
             .OnDelete(DeleteBehavior.Restrict);
