@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using BedrockSvrLog.Data;
-using BedrockSvrLog.Model;
+using BedrockSvrLog.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.DataHub;
